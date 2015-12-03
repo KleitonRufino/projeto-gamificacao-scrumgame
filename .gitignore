@@ -1,1 +1,14 @@
 /target/
+.metadata
+.settings
+.classpath
+.project
+target
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.tmp
+*~
+.DS_Store
