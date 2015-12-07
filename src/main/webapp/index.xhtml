@@ -7,49 +7,76 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:define name="conteudo">
+		<f:event listener="#{jogadorController.atualizaInformacoesDoJogador}"
+			type="preRenderView"></f:event>
+
+	
+
+		<c:if test="#{jogadorController.info == true}">
+			<div class="alert-group">
+				<div class="alert alert-info alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-hidden="true">
+						<f:ajax event="click" listener="#{jogadorController.atualizaMsg}" />
+						×
+					</button>
+					<strong><h:outputText value="#{jogadorController.msg}" /></strong>
+				</div>
+			</div>
+		</c:if>
+
 		<!-- Modal 1-->
 		<div id="myModal1" class="modal fade" tabindex="-1" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">x</span>
-						</button>
-						<h4 class="modal-title">Insirir Cooperações</h4>
-					</div>
-					<div class="modal-body">
-						<h:panelGrid columns="2">
-							<h:outputText value="Quem você ajudou: " />
-							<h:panelGroup>
-								<select class="form-control">
-									<option>Jogador I</option>
-									<option>Jogador II</option>
-									<option>Jogador III</option>
-								</select>
-							</h:panelGroup>
-							<h:outputText value="Quantas vezes: " />
-							<h:panelGroup>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio1" value="option1">
-								<h:outputText value="1" /> </input>
-
-								</label>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio2" value="option2">
-								<h:outputText value="2" /> </input>
-								</label>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio3" value="option3">
-								<h:outputText value="3" /> </input>
-								</label>
-							</h:panelGroup>
-						</h:panelGrid>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-						<button type="button" class="btn btn-primary">Enviar</button>
-					</div>
+					<h:form>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">x</span>
+							</button>
+							<h4 class="modal-title">Inserir Cooperações</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid columns="2">
+								<h:outputText value="Quem você ajudou: " />
+								<h:panelGroup>
+									<c:choose>
+										<c:when test="#{jogadorController.outrosJogadores != null}">
+											<h:selectOneMenu styleClass="form-control"
+												value="#{jogadorController.formCooperacao.jogadorQueAjudei}">
+												<f:selectItems value="#{jogadorController.outrosJogadores}"
+													var="jogador" itemValue="#{jogador.nickname}"
+													itemLabel="#{jogador.nickname}" />
+											</h:selectOneMenu>
+										</c:when>
+										<c:otherwise>
+											<select class="form-control">
+											</select>
+										</c:otherwise>
+									</c:choose>
+								</h:panelGroup>
+								<h:outputText value="Quantas vezes: " />
+								<h:panelGroup>
+									<h:selectOneRadio
+										value="#{jogadorController.formCooperacao.qtd}" styleClass="">
+										<f:selectItem itemValue="1" itemLabel="&#160;1&#160;"
+											styleClass="radio-inline" />
+										<f:selectItem itemValue="2" itemLabel="&#160;2&#160;"
+											styleClass="radio-inline" />
+										<f:selectItem itemValue="3" itemLabel="&#160;3&#160;"
+											styleClass="radio-inline" />
+									</h:selectOneRadio>
+								</h:panelGroup>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">Fechar</button>
+							<h:commandButton
+								action="#{jogadorController.cadastrarCooperacao}"
+								styleClass="btn btn-primary" value="Enviar" />
+						</div>
+					</h:form>
 				</div>
 			</div>
 		</div>
@@ -57,37 +84,37 @@
 		<div id="myModal2" class="modal fade" tabindex="-1" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">x</span>
-						</button>
-						<h4 class="modal-title">Inserir Atividades</h4>
-					</div>
-					<div class="modal-body">
-						<h:panelGrid columns="2">
-							<h:outputText value="Atividades feitas: " />
-							<h:panelGroup>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio1" value="option1">
-								<h:outputText value="1" /> </input>
-								</label>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio2" value="option2">
-								<h:outputText value="2" /> </input>
-
-								</label>
-								<label class="radio-inline"> <input type="radio"
-									name="inlineRadioOptions" id="inlineRadio3" value="option3">
-								<h:outputText value="3" /> </input>
-								</label>
-							</h:panelGroup>
-						</h:panelGrid>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-						<button type="button" class="btn btn-primary">Enviar</button>
-					</div>
+					<h:form>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">x</span>
+							</button>
+							<h4 class="modal-title">Inserir Atividades</h4>
+						</div>
+						<div class="modal-body">
+							<h:panelGrid columns="2">
+								<h:outputText value="Atividades feitas: " />
+								<h:panelGroup>
+									<h:selectOneRadio value="#{jogadorController.qtdAtividade}"
+										styleClass="">
+										<f:selectItem itemValue="1" itemLabel="&#160;1&#160;"
+											styleClass="radio-inline" />
+										<f:selectItem itemValue="2" itemLabel="&#160;2&#160;"
+											styleClass="radio-inline" />
+										<f:selectItem itemValue="3" itemLabel="&#160;3&#160;"
+											styleClass="radio-inline" />
+									</h:selectOneRadio>
+								</h:panelGroup>
+							</h:panelGrid>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Fechar</button>
+							<h:commandButton value="Enviar" styleClass="btn btn-primary"
+								action="#{jogadorController.cadastrarAtividade}" />
+						</div>
+					</h:form>
 				</div>
 			</div>
 		</div>
@@ -106,15 +133,25 @@
 						</h3>
 					</div>
 					<div class="panel-body">
-						<h3>Nickname</h3>
+						<h3>
+							<h:outputText value="#{jogadorController.jogador.nickname}" />
+						</h3>
 						<h:panelGrid columns="2">
-							<h:outputText value="NÍVEL: 1 &#160;" style="size: 5;" />
-							<h:outputText value="PONTOS GERAIS: 50 &#160;" style="size: 5;" />
-							<h:outputText value="PONTOS DE AMIGO: 30 &#160;" style="size: 5;" />
-							<h:outputText value="PONTOS DE CONQUISTA: 20 &#160;"
+							<h:outputText
+								value="NÍVEL EXPERIÊNCIA: #{jogadorController.perfil.nivelExperiencia} &#160;"
+								style="size: 5;" />
+							<h:outputText
+								value="PONTOS TOTAIS: #{jogadorController.perfil.ptsTotais} &#160;"
+								style="size: 5;" />
+							<h:outputText
+								value="PONTOS DE AMIGO: #{jogadorController.perfil.ptsDeAmigo} &#160;"
+								style="size: 5;" />
+							<h:outputText
+								value="PONTOS DE CONQUISTA: #{jogadorController.perfil.ptsDeConquista} &#160;"
 								style="size: 5;" />
 							<p>
-								ESTRELAS <SPAN class="glyphicon glyphicon-star text-info" />: 4
+								ESTRELAS <SPAN class="glyphicon glyphicon-star text-info" />:
+								#{jogadorController.perfil.estrelas}
 							</p>
 						</h:panelGrid>
 					</div>
@@ -130,36 +167,36 @@
 							<div class="col-sm-10">
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="amigoemapuros1_complete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosI}" />
 								</div>
 
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="amigoemapuros2_complete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="amigoemapuros3_nocomplete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosIII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="conquistador1_complete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorI}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="conquistador2_nocomplete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="conquistador3_nocomplete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorIII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="trabalhandocomaequipe_nocomplete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.trabalhandoComAEquipe}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="heroidasprint_nocomplete.jpg" />
+										name="#{jogadorController.visualizaConquistaRodadaAtual.heroiDaSprint}" />
 								</div>
 								<hr />
 								<hr />
@@ -188,13 +225,16 @@
 										<td><span class="glyphicon glyphicon-plus"
 											aria-hidden="true" /> <a data-toggle="modal"
 											data-target="#myModal1"> <h:outputText value=" Ajuda" />
-										</a> <span class="label label-info">5</span></td>
+										</a> <span class="label label-info"> <h:outputText
+													value="#{jogadorController.perfil.countCooperacoes}" />
+										</span></td>
 									</tr>
 									<tr>
 										<td><span class="glyphicon glyphicon-plus"
 											aria-hidden="true" /><a data-toggle="modal"
-											data-target="#myModal2"><h:outputText value=" Atividade" /> </a> <span
-											class="label label-info">5</span></td>
+											data-target="#myModal2"><h:outputText value=" Atividade" />
+										</a> <span class="label label-info"><h:outputText
+													value="#{jogadorController.perfil.countAtividades}" /> </span></td>
 									</tr>
 									<tr>
 										<td><h:panelGrid columns="2">
@@ -215,6 +255,9 @@
 					</div>
 				</div>
 			</div>
+
+				
+				
 		</div>
 	</ui:define>
 </ui:composition>

@@ -1,63 +1,61 @@
 package com.controller;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
-import com.mensagens.Message;
+import com.gerenciador.GerenciadorJogador;
+import com.gerenciador.impl.GerenciadorJogadorImpl;
+import com.model.Jogador;
 
-@Component
-@ManagedBean
-@RequestScoped
+@Controller
+@Scope("request")
 public class LoginController {
-	private String nickname;
-	private String senha;
-	private boolean info;
-	private String message;
 
-	public LoginController() {
-		this.info = false;
+	private String message;
+	private Jogador jogador;
+	@Autowired
+	private GerenciadorJogador gerenciadorJogador;
+	@Autowired
+	private JogadorController jogadorController;
+
+	LoginController() {
+		this.jogador = new Jogador();
+		this.gerenciadorJogador = new GerenciadorJogadorImpl();
 	}
 
 	public String login() {
-
-		if (nickname != null && nickname.equals("admin") && senha != null && senha.equals("admin")) {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		jogador = this.gerenciadorJogador.findByNicknameAndSenha(jogador.getNickname(), jogador.getSenha());
+		if (jogador != null) {
+			if (session == null) {
+				session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+			}
+			session.setAttribute("jogador", jogador);
+			jogadorController.setJogador(jogador);
+			jogadorController.atualizaInformacoesDoJogador();
 			return "/index?faces-redirect=true";
 		} else {
-			info = true;
-			message = Message.messageLoginWarning;
+			reload();
+			if (session != null) {
+				session.invalidate();
+			}
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Login Falhou", "username e/ou senha inválido(s)"));
 		}
-
 		return null;
 	}
 
 	public String logout() {
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		request.getSession().invalidate();
 		return "/login?faces-redirect=true";
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-
-	public boolean isInfo() {
-		return info;
-	}
-
-	public void setInfo(boolean info) {
-		this.info = info;
 	}
 
 	public String getMessage() {
@@ -66,6 +64,34 @@ public class LoginController {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public GerenciadorJogador getGerenciadorJogador() {
+		return gerenciadorJogador;
+	}
+
+	public void setGerenciadorJogador(GerenciadorJogador gerenciadorJogador) {
+		this.gerenciadorJogador = gerenciadorJogador;
+	}
+
+	public Jogador getJogador() {
+		return jogador;
+	}
+
+	public void setJogador(Jogador jogador) {
+		this.jogador = jogador;
+	}
+
+	public void reload() {
+		this.jogador = new Jogador();
+	}
+
+	public JogadorController getJogadorController() {
+		return jogadorController;
+	}
+
+	public void setJogadorController(JogadorController jogadorController) {
+		this.jogadorController = jogadorController;
 	}
 
 }

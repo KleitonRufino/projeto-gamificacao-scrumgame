@@ -1,6 +1,7 @@
 <ui:composition template="/WEB-INF/templates/layoutPadrao.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 	<ui:define name="conteudo">
 
@@ -14,155 +15,144 @@
 					<a href="#" class="nav-tabs-dropdown btn btn-block btn-primary">Rodadas</a>
 					<ul id="nav-tabs-wrapper"
 						class="nav nav-tabs nav-pills nav-stacked well">
-						<li class="active"><a href="#vtab1" data-toggle="tab">Rodada
-								1</a></li>
-						<li><a href="#vtab2" data-toggle="tab">Rodada 2</a></li>
-						<li><a href="#vtab3" data-toggle="tab">Rodada 3</a></li>
+						<c:forEach items="#{jogadorController.historico}" var="h">
+							<c:choose>
+								<c:when test="#{h.rodada.numero != 1}">
+									<li><a href="#vtab#{h.rodada.numero}" data-toggle="tab">Rodada
+											#{h.rodada.numero}</a></li>
+								</c:when>
+								<c:otherwise>
+									<li class="active"><a href="#vtab1" data-toggle="tab">Rodada
+											1</a></li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
 					</ul>
 				</div>
 				<div class="col-sm-9">
 					<div class="tab-content">
-						<div role="tabpanel" class="tab-pane fade in active" id="vtab1">
-							<h3>Rodada 1</h3>
-							<div class="gallery">
-								<div class="container">
-									<div class="row">
-										<div class="col-sm-10">
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros1_complete.jpg" />
-											</div>
+						<c:forEach items="#{jogadorController.historico}" var="h">
+							<c:choose>
+								<c:when test="#{h.rodada.numero != 1}">
+									<div role="tabpanel" class="tab-pane fade"
+										id="vtab#{h.rodada.numero}">
+										<h3>Rodada #{h.rodada.nome}</h3>
+										<div class="gallery">
+											<div class="container">
+												<div class="row">
+													<div class="col-sm-10">
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosI}" />
+														</div>
 
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros2_complete.jpg" />
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosIII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorI}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorIII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.trabalhandoComAEquipe}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.heroiDaSprint}" />
+														</div>
+														<hr />
+														<hr />
+													</div>
+												</div>
 											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador1_complete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador2_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="trabalhandocomaequipe_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="heroidasprint_nocomplete.jpg" />
-											</div>
-											<hr />
-											<hr />
 										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div role="tabpanel" class="tab-pane fade" id="vtab2">
-							<h3>Rodada 2</h3>
-							<div class="gallery">
-								<div class="container">
-									<div class="row">
-										<div class="col-sm-10">
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros1_complete.jpg" />
-											</div>
+								</c:when>
+								<c:otherwise>
+									<div role="tabpanel" class="tab-pane fade in active" id="vtab1">
+										<h3>Rodada 1</h3>
+										<div class="gallery">
+											<div class="container">
+												<div class="row">
+													<div class="col-sm-10">
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosI}" />
+														</div>
 
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros2_complete.jpg" />
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.amigoEmApurosIII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorI}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.conquistadorIII}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.trabalhandoComAEquipe}" />
+														</div>
+														<div class="col-sm-4">
+															<h:graphicImage class="thumbnail img-responsive"
+																library="img"
+																name="#{h.conquista.heroiDaSprint}" />
+														</div>
+														<hr />
+														<hr />
+													</div>
+												</div>
 											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador1_complete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador2_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="trabalhandocomaequipe_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="heroidasprint_nocomplete.jpg" />
-											</div>
-											<hr />
-											<hr />
 										</div>
 									</div>
-								</div>
-							</div>
-						</div>
-						<div role="tabpanel" class="tab-pane fade in" id="vtab3">
-							<h3>Rodada 3</h3>
-							<div class="gallery">
-								<div class="container">
-									<div class="row">
-										<div class="col-sm-10">
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros1_complete.jpg" />
-											</div>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
 
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros2_complete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="amigoemapuros3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador1_complete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador2_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="conquistador3_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="trabalhandocomaequipe_nocomplete.jpg" />
-											</div>
-											<div class="col-sm-4">
-												<h:graphicImage class="thumbnail img-responsive"
-													library="img" name="heroidasprint_nocomplete.jpg" />
-											</div>
-											<hr />
-											<hr />
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
+
 
 
 		</div>
