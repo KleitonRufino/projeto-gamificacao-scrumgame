@@ -107,14 +107,16 @@ public class JogadorController implements Serializable {
 		Cooperacao cooperacao = gerenciadorCooperacao.criar(jogadorAjudado, rodadaAtiva);
 		jogadorQueAjudou.getCooperacoes().add(cooperacao);
 
-		gerenciadorJogador.atualizar(jogadorQueAjudou);
+		this.gerenciadorJogador.atualizar(jogadorQueAjudou);
 
 		scoreDaRodadaJogadorAjudado = gerenciadorCooperacao.solicitarPtsPedidoDeAjuda(scoreDaRodadaJogadorAjudado,
 				formCooperacao.getQtd());
-		gerenciadorScore.atualizar(scoreDaRodadaJogadorAjudado);
+		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodadaJogadorAjudado);
+		this.gerenciadorScore.atualizar(scoreDaRodadaJogadorAjudado);
+
 		List<Score> scoresJogadorAjudado = gerenciadorScore.findByIdJogador(jogadorAjudado);
 		perfilJogadorAjudado = gerenciadorPerfil.processarDadosDoPerfil(perfilJogadorAjudado, scoresJogadorAjudado);
-		gerenciadorPerfil.atualizar(perfilJogadorAjudado);
+		this.gerenciadorPerfil.atualizar(perfilJogadorAjudado);
 
 		scoreDaRodadaJogadorQueAjudou = gerenciadorCooperacao.solicitarNovaCooperacao(scoreDaRodadaJogadorQueAjudou,
 				formCooperacao.getQtd());
@@ -122,12 +124,14 @@ public class JogadorController implements Serializable {
 				.verificarNovasConquistasParaCooperacao(scoreDaRodadaJogadorQueAjudou);
 		scoreDaRodadaJogadorQueAjudou = gerenciadorConquista
 				.atribuirConquistaERecompensaAoScore(scoreDaRodadaJogadorQueAjudou, novasConquistas);
-		gerenciadorScore.atualizar(scoreDaRodadaJogadorQueAjudou);
+
+		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodadaJogadorQueAjudou);
+		this.gerenciadorScore.atualizar(scoreDaRodadaJogadorQueAjudou);
 		List<Score> scoresJogadorQueAjudou = gerenciadorScore.findByIdJogador(jogadorQueAjudou);
 		perfilJogadorQueAjudou = gerenciadorPerfil.processarDadosDoPerfil(perfilJogadorQueAjudou,
 				scoresJogadorQueAjudou);
-		gerenciadorPerfil.atualizar(perfilJogadorQueAjudou);
 
+		this.gerenciadorPerfil.atualizar(perfilJogadorQueAjudou);
 		this.perfil = perfilJogadorQueAjudou;
 		this.formCooperacao = new FormCooperacao();
 
@@ -155,14 +159,13 @@ public class JogadorController implements Serializable {
 		List<Conquista> novasConquistas = this.gerenciadorConquista
 				.verificarNovasConquistasParaAtividade(scoreDaRodada);
 		scoreDaRodada = this.gerenciadorConquista.atribuirConquistaERecompensaAoScore(scoreDaRodada, novasConquistas);
-
-		gerenciadorScore.atualizar(scoreDaRodada);
+		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodada);
+		this.gerenciadorScore.atualizar(scoreDaRodada);
 
 		List<Score> scores = this.gerenciadorScore.findByIdJogador(jogador);
 		perfil = this.gerenciadorPerfil.processarDadosDoPerfil(perfil, scores);
 
 		this.gerenciadorPerfil.atualizar(perfil);
-
 		this.perfil = perfil;
 		this.qtdAtividade = 0;
 
@@ -175,7 +178,6 @@ public class JogadorController implements Serializable {
 		}
 
 		info = true;
-
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(null, msg));
 

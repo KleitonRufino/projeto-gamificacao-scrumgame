@@ -14,5 +14,7 @@ public interface GerenciadorScore {
 	public Score findByRodadaAtivaAndIdJogador(Jogador jogador);
 
 	public List<Score> findByIdJogador(Jogador jogador);
+	
+	public void calcularPtsTotaisNaRodada(Score scoreRodada);
 
 }

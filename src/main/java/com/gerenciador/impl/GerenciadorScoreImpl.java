@@ -36,4 +36,10 @@ public class GerenciadorScoreImpl implements GerenciadorScore {
 		return this.repScore.findByIdJogador(jogador);
 	}
 
+	@Override
+	public void calcularPtsTotaisNaRodada(Score scoreRodada) {
+		scoreRodada.setPtsTotaisNaRodada(scoreRodada.getPtsDeAmigoNaRodada() + scoreRodada.getPtsDeConquistaNaRodada()
+				+ scoreRodada.getPtsDeAtividadeNaRodada());
+	}
+
 }
