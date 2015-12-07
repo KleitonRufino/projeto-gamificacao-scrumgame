@@ -51,8 +51,8 @@ public class GerenciadorCooperacaoImpl implements GerenciadorCooperacao {
 	}
 
 	@Override
-	public Score solicitarPtsPedidoDeAjuda(Score scoreRodada) {
-		scoreRodada.setPtsDeAmigoNaRodada(scoreRodada.getPtsDeAmigoNaRodada() + Pontuacao.CINCOPTS.getPts());
+	public Score solicitarPtsPedidoDeAjuda(Score scoreRodada, int qtdPedidosDeAjuda) {
+		scoreRodada.setPtsDeAmigoNaRodada(scoreRodada.getPtsDeAmigoNaRodada() + (Pontuacao.CINCOPTS.getPts() * qtdPedidosDeAjuda));
 		return scoreRodada;
 	}
 

@@ -15,5 +15,5 @@ public interface GerenciadorCooperacao {
 
 	public Score solicitarNovaCooperacao(Score scoreRodada, int novasCooperacoesFeitas);
 
-	public Score solicitarPtsPedidoDeAjuda(Score scoreRodada);
+	public Score solicitarPtsPedidoDeAjuda(Score scoreRodada, int qtdPedidosDeAjuda);
 }

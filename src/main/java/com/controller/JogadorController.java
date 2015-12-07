@@ -109,7 +109,8 @@ public class JogadorController implements Serializable {
 
 		gerenciadorJogador.atualizar(jogadorQueAjudou);
 
-		scoreDaRodadaJogadorAjudado = gerenciadorCooperacao.solicitarPtsPedidoDeAjuda(scoreDaRodadaJogadorAjudado);
+		scoreDaRodadaJogadorAjudado = gerenciadorCooperacao.solicitarPtsPedidoDeAjuda(scoreDaRodadaJogadorAjudado,
+				formCooperacao.getQtd());
 		gerenciadorScore.atualizar(scoreDaRodadaJogadorAjudado);
 		List<Score> scoresJogadorAjudado = gerenciadorScore.findByIdJogador(jogadorAjudado);
 		perfilJogadorAjudado = gerenciadorPerfil.processarDadosDoPerfil(perfilJogadorAjudado, scoresJogadorAjudado);
