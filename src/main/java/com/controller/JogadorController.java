@@ -2,33 +2,43 @@ package com.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.enums.Acao;
+import com.enums.NivelExperiencia;
+import com.enums.Pontuacao;
+import com.enums.UrlImgHabilidade;
+import com.enums.UrlImgPersonagem;
 import com.formandview.FormCooperacao;
 import com.formandview.VisualizaConquista;
+import com.formandview.VisualizaHabilidade;
 import com.formandview.VisualizaHistorico;
+import com.formandview.VisualizaPersonagem;
 import com.gerenciador.GerenciadorAtividade;
 import com.gerenciador.GerenciadorConquista;
 import com.gerenciador.GerenciadorCooperacao;
+import com.gerenciador.GerenciadorHabilidade;
 import com.gerenciador.GerenciadorJogador;
+import com.gerenciador.GerenciadorNivel;
 import com.gerenciador.GerenciadorPerfil;
+import com.gerenciador.GerenciadorPersonagem;
+import com.gerenciador.GerenciadorRecompensa;
 import com.gerenciador.GerenciadorRodada;
-import com.gerenciador.GerenciadorScore;
+import com.model.Caixa;
 import com.model.Conquista;
 import com.model.Cooperacao;
+import com.model.Habilidade;
+import com.model.Item;
 import com.model.Jogador;
+import com.model.Nivel;
 import com.model.Perfil;
+import com.model.Personagem;
 import com.model.Rodada;
-import com.model.Score;
 
 @Transactional
 @Controller
@@ -42,8 +52,6 @@ public class JogadorController implements Serializable {
 	@Autowired
 	private GerenciadorPerfil gerenciadorPerfil;
 	@Autowired
-	private GerenciadorScore gerenciadorScore;
-	@Autowired
 	private GerenciadorConquista gerenciadorConquista;
 	@Autowired
 	private GerenciadorAtividade gerenciadorAtividade;
@@ -51,13 +59,25 @@ public class JogadorController implements Serializable {
 	private GerenciadorCooperacao gerenciadorCooperacao;
 	@Autowired
 	private GerenciadorRodada gerenciadorRodada;
+	@Autowired
+	private GerenciadorNivel gerenciadorNivel;
+	@Autowired
+	private GerenciadorRecompensa gerenciadorRecompensa;
+	@Autowired
+	private GerenciadorPersonagem gerenciadorPersonagem;
+	@Autowired
+	private GerenciadorHabilidade gerenciadorHabilidade;
 
 	// View
 	private Jogador jogador;
 	private Perfil perfil;
-	private VisualizaConquista visualizaConquistaRodadaAtual;
+	private VisualizaConquista visualizaConquista;
 	private List<VisualizaHistorico> historico;
-
+	private List<VisualizaPersonagem> personagensAdquiridos;
+	private List<VisualizaPersonagem> personagensNaoAdquiridos;
+	private List<VisualizaHabilidade> habilidadesAdquiridas;
+	private List<VisualizaHabilidade> habilidadesNaoAdquiridas;
+	private int porcentagemNivel;
 	// Forms
 	private List<Jogador> outrosJogadores;
 	private FormCooperacao formCooperacao;
@@ -65,127 +85,329 @@ public class JogadorController implements Serializable {
 
 	// MSG
 	private boolean info = false;
-	private String msg = "";
+	private List<String> msg;
 
 	public JogadorController() {
-		this.visualizaConquistaRodadaAtual = new VisualizaConquista();
+		this.visualizaConquista = new VisualizaConquista();
 		this.formCooperacao = new FormCooperacao();
+		this.personagensAdquiridos = new ArrayList<VisualizaPersonagem>();
+		this.personagensNaoAdquiridos = new ArrayList<VisualizaPersonagem>();
+		this.habilidadesAdquiridas = new ArrayList<VisualizaHabilidade>();
+		this.habilidadesNaoAdquiridas = new ArrayList<VisualizaHabilidade>();
 	}
 
-	public String historicoConquistas() {
-		List<Score> scores = this.gerenciadorScore.findByIdJogador(this.jogador);
-		this.historico = new ArrayList<VisualizaHistorico>();
-		for (Score score : scores) {
-			VisualizaConquista visualizaConquista = new VisualizaConquista();
-			visualizaConquista.preencheConquistas(score.getPremiacoes());
-			VisualizaHistorico h = new VisualizaHistorico(score.getRodada(), visualizaConquista);
-			this.historico.add(h);
-		}
-
-		this.historico.sort(Comparator.comparing(s -> s.getRodada().getNumero()));
-		return "/historicoConquistas?faces-redirect=true";
-	}
+	// public String historicoConquistas() {
+	// List<Score> scores = this.gerenciadorScore.findByIdJogador(this.jogador);
+	// this.historico = new ArrayList<VisualizaHistorico>();
+	// for (Score score : scores) {
+	// VisualizaConquista visualizaConquista = new VisualizaConquista();
+	// visualizaConquista.preencheConquistas(score.getPremiacoes());
+	// VisualizaHistorico h = new VisualizaHistorico(score.getRodada(),
+	// visualizaConquista);
+	// this.historico.add(h);
+	// }
+	//
+	// this.historico.sort(Comparator.comparing(s ->
+	// s.getRodada().getNumero()));
+	// return "/historicoConquistas?faces-redirect=true";
+	// }
 
 	public void atualizaInformacoesDoJogador() {
 		this.perfil = this.gerenciadorPerfil.findByNicknameDoJogador(jogador);
 		this.outrosJogadores = this.gerenciadorJogador.findAllExceptMe(this.jogador.getNickname());
-		Score scoreRodadaAtual = this.gerenciadorScore.findByRodadaAtivaAndIdJogador(jogador);
-		visualizaConquistaRodadaAtual.preencheConquistas(scoreRodadaAtual.getPremiacoes());
+		this.visualizaConquista.preencheConquistas(perfil.getPremiacoes());
+
+		this.personagensAdquiridos = new ArrayList<VisualizaPersonagem>();
+		this.personagensNaoAdquiridos = new ArrayList<VisualizaPersonagem>();
+		this.habilidadesAdquiridas = new ArrayList<VisualizaHabilidade>();
+		this.habilidadesNaoAdquiridas = new ArrayList<VisualizaHabilidade>();
+
+		this.personagensAdquiridos = this.listarPersonagem(gerenciadorPersonagem.findMyPersonagemByPerfil(perfil));
+		this.personagensNaoAdquiridos = this
+				.listarPersonagem(gerenciadorPersonagem.findNotMyPersonagemByPerfil(perfil));
+		this.habilidadesAdquiridas = this.listarHabilidade(gerenciadorHabilidade.findMyHabilidadeByPerfil(perfil));
+		this.habilidadesNaoAdquiridas = this
+				.listarHabilidade(gerenciadorHabilidade.findNotMyHabilidadeByPerfil(perfil));
+
+		this.porcentagemNivel = (int) (this.perfil.getNivel().getNivel() * 7.3);
+		if (this.porcentagemNivel > 100)
+			this.porcentagemNivel = 100;
+		this.info = false;
 	}
 
 	public String cadastrarCooperacao() {
-		Rodada rodadaAtiva = this.gerenciadorRodada.findByAtiva();
-		Jogador jogadorQueAjudou = gerenciadorJogador.findByNicknameComCooperacoes(this.jogador.getNickname());
-		Jogador jogadorAjudado = this.gerenciadorJogador.findByNickname(formCooperacao.getJogadorQueAjudei());
 
-		Perfil perfilJogadorQueAjudou = gerenciadorPerfil.findByIdDoJogador(jogadorQueAjudou);
-		Score scoreDaRodadaJogadorQueAjudou = gerenciadorScore.findByRodadaAtivaAndIdJogador(jogadorQueAjudou);
+		Rodada rodadaAtiva = gerenciadorRodada.findByAtiva();
 
+		Jogador jogadorAjudado = gerenciadorJogador.findByNickname(formCooperacao.getJogadorQueAjudei());
+
+		Perfil perfilJogadorQueAjudou = gerenciadorPerfil.findByIdDoJogador(this.jogador);
 		Perfil perfilJogadorAjudado = gerenciadorPerfil.findByIdDoJogador(jogadorAjudado);
-		Score scoreDaRodadaJogadorAjudado = gerenciadorScore.findByRodadaAtivaAndIdJogador(jogadorAjudado);
 
-		Cooperacao cooperacao = gerenciadorCooperacao.criar(jogadorAjudado, rodadaAtiva);
-		jogadorQueAjudou.getCooperacoes().add(cooperacao);
+		for (int i = 0; i < formCooperacao.getQtd(); i++) {
+			Cooperacao cooperacao = gerenciadorCooperacao.criar(jogadorAjudado, rodadaAtiva);
+			this.jogador.getCooperacoes().add(cooperacao);
+		}
+		gerenciadorJogador.atualizar(this.jogador);
 
-		this.gerenciadorJogador.atualizar(jogadorQueAjudou);
-
-		scoreDaRodadaJogadorAjudado = gerenciadorCooperacao.solicitarPtsPedidoDeAjuda(scoreDaRodadaJogadorAjudado,
+		perfilJogadorAjudado = gerenciadorPerfil.inserirPtsParaPedidoDeAjudaNoPerfil(perfilJogadorAjudado,
 				formCooperacao.getQtd());
-		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodadaJogadorAjudado);
-		this.gerenciadorScore.atualizar(scoreDaRodadaJogadorAjudado);
-
-		List<Score> scoresJogadorAjudado = gerenciadorScore.findByIdJogador(jogadorAjudado);
-		perfilJogadorAjudado = gerenciadorPerfil.processarDadosDoPerfil(perfilJogadorAjudado, scoresJogadorAjudado);
-		this.gerenciadorPerfil.atualizar(perfilJogadorAjudado);
-
-		scoreDaRodadaJogadorQueAjudou = gerenciadorCooperacao.solicitarNovaCooperacao(scoreDaRodadaJogadorQueAjudou,
+		perfilJogadorAjudado = gerenciadorPerfil.inserirPtsExtrasParaPedidoAjudaNoPerfil(perfilJogadorAjudado,
 				formCooperacao.getQtd());
-		List<Conquista> novasConquistas = gerenciadorConquista
-				.verificarNovasConquistasParaCooperacao(scoreDaRodadaJogadorQueAjudou);
-		scoreDaRodadaJogadorQueAjudou = gerenciadorConquista
-				.atribuirConquistaERecompensaAoScore(scoreDaRodadaJogadorQueAjudou, novasConquistas);
+		perfilJogadorAjudado = gerenciadorPerfil.processarPtsTotais(perfilJogadorAjudado);
 
-		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodadaJogadorQueAjudou);
-		this.gerenciadorScore.atualizar(scoreDaRodadaJogadorQueAjudou);
-		List<Score> scoresJogadorQueAjudou = gerenciadorScore.findByIdJogador(jogadorQueAjudou);
-		perfilJogadorQueAjudou = gerenciadorPerfil.processarDadosDoPerfil(perfilJogadorQueAjudou,
-				scoresJogadorQueAjudou);
+		Nivel novo = gerenciadorNivel.findByXp(perfilJogadorAjudado.getPtsTotais());
+		// boolean passouDeNivel =
+		// gerenciadorNivel.verificarNovoNivel(perfilJogadorAjudado.getNivel(),
+		// novo);
+		// if (passouDeNivel) {
+		// perfilJogadorAjudado =
+		// gerenciadorPerfil.processarNivel(perfilJogadorAjudado, novo);
+		// Caixa recompensa =
+		// gerenciadorRecompensa.verificarRecompensaParaNovoNivel(novo);
+		// perfilJogadorAjudado =
+		// gerenciadorPerfil.obterRecompensaPorNovoNivel(perfilJogadorAjudado,
+		// recompensa);
+		// }
 
-		this.gerenciadorPerfil.atualizar(perfilJogadorQueAjudou);
-		this.perfil = perfilJogadorQueAjudou;
-		this.formCooperacao = new FormCooperacao();
+		gerenciadorPerfil.atualizar(perfilJogadorAjudado);
 
-		msg = "AJUDA CADASTRADA; ";
-		if (novasConquistas.size() > 0) {
-			msg += "Você desbloqueou " + novasConquistas.size() + " conquista(s)" + "; " + "Nova(s) Conquista(s): ";
-			for (Conquista c : novasConquistas) {
-				msg += c.getNomeConquista().getNome() + " | ";
-			}
+		perfilJogadorQueAjudou = gerenciadorPerfil.inserirPtsParaCooperacaoNoPerfil(perfilJogadorQueAjudou,
+				formCooperacao.getQtd());
+		perfilJogadorQueAjudou = gerenciadorPerfil.inserirPtsExtrasParaPedidoAjudaNoPerfil(perfilJogadorQueAjudou,
+				formCooperacao.getQtd());
+		perfilJogadorQueAjudou = gerenciadorPerfil.processarPtsTotais(perfilJogadorQueAjudou);
+
+		List<Conquista> novasConquistas = new ArrayList<Conquista>();
+		novasConquistas = gerenciadorConquista.verificarNovasConquistasParaCooperacao(this.jogador,
+				perfilJogadorQueAjudou, novasConquistas, rodadaAtiva);
+
+		perfilJogadorQueAjudou = gerenciadorPerfil.atribuirPremiacaoParaPerfil(perfilJogadorQueAjudou, rodadaAtiva,
+				novasConquistas);
+
+		boolean passouDeNivel = gerenciadorNivel.verificarNovoNivel(this.perfil.getNivel(), novo);
+
+		Caixa recompensa = null;
+		if (passouDeNivel) {
+			perfilJogadorQueAjudou = gerenciadorPerfil.processarNivel(perfilJogadorQueAjudou, novo);
+			recompensa = gerenciadorRecompensa.verificarRecompensaParaNovoNivel(novo);
+			perfilJogadorAjudado = gerenciadorPerfil.obterRecompensaPorNovoNivel(perfilJogadorQueAjudou, recompensa);
 		}
 
-		info = true;
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(null, msg));
+		this.perfil = perfilJogadorQueAjudou;
 
-		return null;
+		msg = new ArrayList<String>();
+		msg.add("UHU!!! nova ajuda(s) efetuada(s), continue assim!!! ");
+		msg.add("Você ganhou + " + this.verificarPontosDeAmigoObtidos(formCooperacao.getQtd(), this.perfil)
+				+ " Pontos de Amigo");
+		msg.add("Você ganhou + " + this.verificarPontosExtrasObtidosParaCooperacao(formCooperacao.getQtd(), this.perfil)
+				+ " Pontos Extras");
+		if (novasConquistas.size() > 0) {
+			String s = "YEAH!!! Você desbloqueou " + novasConquistas.size() + " nova(s) conquista(s): ";
+			for (Conquista c : novasConquistas) {
+				s += c.getNomeConquista().getNome() + " - ";
+			}
+			msg.add(s);
+			msg.add("Você ganhou +" + this.verificarEstrelasConquistas(novasConquistas) + " estrelas");
+		}
+
+		if (passouDeNivel) {
+			msg.add(this.perfil.getNivel().getDescricao());
+			msg.add("Que bela suspresa!!!" + recompensa.getDescricao());
+		}
+
+		this.perfil = perfilJogadorQueAjudou;
+		this.atualizaInformacoesDoJogador();
+		this.formCooperacao = new FormCooperacao();
+		info = true;
+		this.visualizaConquista.preencheConquistas(perfil.getPremiacoes());
+		return "/index?faces-redirect=true";
 	}
 
 	public String cadastrarAtividade() {
 
+		Rodada rodadaAtiva = gerenciadorRodada.findByAtiva();
 		Perfil perfil = this.gerenciadorPerfil.findByIdDoJogador(this.jogador);
-		Score scoreDaRodada = this.gerenciadorScore.findByRodadaAtivaAndIdJogador(this.jogador);
 
-		scoreDaRodada = this.gerenciadorAtividade.solicitarNovaAtividade(scoreDaRodada, this.qtdAtividade);
-		List<Conquista> novasConquistas = this.gerenciadorConquista
-				.verificarNovasConquistasParaAtividade(scoreDaRodada);
-		scoreDaRodada = this.gerenciadorConquista.atribuirConquistaERecompensaAoScore(scoreDaRodada, novasConquistas);
-		this.gerenciadorScore.calcularPtsTotaisNaRodada(scoreDaRodada);
-		this.gerenciadorScore.atualizar(scoreDaRodada);
+		perfil = gerenciadorPerfil.inserirPtsParaAtividadeNoPerfil(perfil, qtdAtividade);
+		perfil = gerenciadorPerfil.inserirPtsExtrasParaAtividadeNoPerfil(perfil, qtdAtividade);
+		perfil = gerenciadorPerfil.processarPtsTotais(perfil);
 
-		List<Score> scores = this.gerenciadorScore.findByIdJogador(jogador);
-		perfil = this.gerenciadorPerfil.processarDadosDoPerfil(perfil, scores);
+		List<Conquista> novasConquistas = new ArrayList<Conquista>();
+		novasConquistas = gerenciadorConquista.verificarNovasConquistasParaAtividade(perfil, novasConquistas);
+		this.perfil = gerenciadorPerfil.atribuirPremiacaoParaPerfil(perfil, rodadaAtiva, novasConquistas);
 
-		this.gerenciadorPerfil.atualizar(perfil);
-		this.perfil = perfil;
-		this.qtdAtividade = 0;
+		Nivel novo = gerenciadorNivel.verificarNivel(perfil);
+		boolean passouDeNivel = gerenciadorNivel.verificarNovoNivel(perfil.getNivel(), novo);
 
-		msg = "ATIVIDADE CADASTRADA; ";
-		if (novasConquistas.size() > 0) {
-			msg += "Você desbloqueou " + novasConquistas.size() + " conquista(s)" + "; " + "Nova(s) Conquista(s): ";
-			for (Conquista c : novasConquistas) {
-				msg += c.getNomeConquista().getNome() + " | ";
-			}
+		Caixa recompensa = null;
+		if (passouDeNivel) {
+			perfil = gerenciadorPerfil.processarNivel(perfil, novo);
+			recompensa = gerenciadorRecompensa.verificarRecompensaParaNovoNivel(novo);
+			perfil = gerenciadorPerfil.obterRecompensaPorNovoNivel(perfil, recompensa);
 		}
 
-		info = true;
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(null, msg));
+		this.gerenciadorPerfil.atualizar(perfil);
 
-		return null;
+		msg = new ArrayList<String>();
+		msg.add("UHU!!! nova(s) atividade(s) concluida(s)");
+		msg.add("Você ganhou + " + this.verificarPontosDeAtividadeObtidos(qtdAtividade, this.perfil)
+				+ " Pontos de Atividade");
+		msg.add("Você ganhou + " + this.verificarPontosExtrasObtidosParaAtividade(qtdAtividade, this.perfil)
+				+ " Pontos Extras");
+		if (novasConquistas.size() > 0) {
+			String s = "Você desbloqueou " + novasConquistas.size() + " conquista(s)" + "; " + "Nova(s) Conquista(s): ";
+			for (Conquista c : novasConquistas) {
+				s += c.getNomeConquista().getNome() + "- ";
+			}
+			msg.add(s);
+			msg.add("Você ganhou +" + this.verificarEstrelasConquistas(novasConquistas) + " estrelas");
+		}
+
+		if (passouDeNivel) {
+			msg.add(this.perfil.getNivel().getDescricao());
+			msg.add("Que bela suspresa!!! " + recompensa.getDescricao());
+		}
+
+		this.perfil = perfil;
+		this.atualizaInformacoesDoJogador();
+		this.qtdAtividade = 0;
+		this.info = true;
+		this.visualizaConquista.preencheConquistas(perfil.getPremiacoes());
+		return "/index?faces-redirect=true";
 	}
 
-	public void atualizaMsg() {
-		this.info = false;
+	public String obterPersonagem(Personagem personagem) {
+		Perfil perfil = this.perfil;
+		perfil = gerenciadorPerfil.obterPersonagemParaPerfil(perfil, personagem);
+		if (perfil == null) {
+			msg = new ArrayList<String>();
+			msg.add("Que Pena! você não pode obter este personagem");
+			msg.add("Razões:");
+			msg.add("1. Você já possui este personagem");
+			msg.add("2. Seu nível é inferior ao nível de desbloqueio do personagem ");
+			msg.add("3. Você não possui estrelas suficientes");
+		} else {
+			this.perfil = perfil;
+			gerenciadorPerfil.atualizar(perfil);
+
+			this.personagensAdquiridos = new ArrayList<VisualizaPersonagem>();
+			this.personagensNaoAdquiridos = new ArrayList<VisualizaPersonagem>();
+			this.personagensAdquiridos = this.listarPersonagem(gerenciadorPersonagem.findMyPersonagemByPerfil(perfil));
+			this.personagensNaoAdquiridos = this
+					.listarPersonagem(gerenciadorPersonagem.findNotMyPersonagemByPerfil(perfil));
+
+			msg = new ArrayList<String>();
+			msg.add("Muito Bem!!! Você obteve um novo personagem");
+			msg.add("Habilidades:");
+			msg.add("Você agora ganha " + personagem.getPontos()
+					+ " pontos extras sempre quando tiver um ação relacionada a " + personagem.getAcao());
+		}
+		this.atualizaInformacoesDoJogador();
+		info = true;
+		return "/index?faces-redirect=true";
+	}
+
+	public String obterHabilidade(Habilidade habilidade) {
+		Perfil perfil = this.perfil;
+		perfil = gerenciadorPerfil.obterHabilidadeDoPersonagemParaPerfil(perfil, habilidade);
+		if (perfil == null) {
+			msg = new ArrayList<String>();
+			msg.add("Que Pena! você não pode obter esta habilidade");
+			msg.add("Razões:");
+			msg.add("1. Você não possui o personagem que contém esta habilidade");
+			msg.add("2. Seu nível é inferior ao nível de desbloqueio da habilidaed ");
+			msg.add("3. Você não possui estrelas suficientes");
+		} else {
+			this.perfil = perfil;
+			gerenciadorPerfil.atualizar(perfil);
+			msg = new ArrayList<String>();
+			msg.add("Muito Bem!!! Você obteve a habilidade do  personagem " + habilidade.getPersonagem().getNome());
+			msg.add("Habilidades:");
+			msg.add("Seu personagem agora tem o poder aumentado em " + habilidade.getPontos()
+					+ " pontos extras sempre quando");
+		}
+
+		this.atualizaInformacoesDoJogador();
+		this.info = true;
+		return "/index?faces-redirect=true";
+	}
+
+	public int verificarPontosDeAmigoObtidos(int novasCooperacoesFeitas, Perfil perfil) {
+		return (novasCooperacoesFeitas * Pontuacao.DEZPTS.getPts()) + perfil.getNivel().getAumentoDePontos();
+	}
+
+	public int verificarPontosDeAtividadeObtidos(int novasAtividades, Perfil perfil) {
+		return (novasAtividades * Pontuacao.QUINZE.getPts()) + perfil.getNivel().getAumentoDePontos();
+	}
+
+	public int verificarEstrelasConquistas(List<Conquista> conquistas) {
+		int estrelas = 0;
+		for (Conquista conquista : conquistas) {
+			estrelas += conquista.getRecompensaEmEstrela();
+		}
+		return estrelas;
+	}
+
+	public int verificarPontosExtrasObtidosParaAtividade(int novasAtividadesFeitas, Perfil perfil) {
+		int ptsExtras = 0;
+		for (Item item : perfil.getMeusItens()) {
+			if (item.getPersonagem().getAcao().equals(Acao.ATIVIDADE)) {
+				ptsExtras += item.getPersonagem().getPontos() * novasAtividadesFeitas;
+				if (item.getHabilidade() != null)
+					ptsExtras += item.getHabilidade().getPontos() * novasAtividadesFeitas;
+
+			}
+		}
+		return ptsExtras;
+	}
+
+	public int verificarPontosExtrasObtidosParaCooperacao(int novasCooperacoes, Perfil perfil) {
+		int ptsExtras = 0;
+		for (Item item : perfil.getMeusItens()) {
+			if (item.getPersonagem().getAcao().equals(Acao.CONCEDE_AJUDA)) {
+				ptsExtras += item.getPersonagem().getPontos() * novasCooperacoes;
+				if (item.getHabilidade() != null)
+					ptsExtras += item.getHabilidade().getPontos() * novasCooperacoes;
+
+			}
+		}
+		return ptsExtras;
+	}
+
+	public int verificarPontosExtrasObtidosParaPedidoDeAjuda(int pedidoDeAjuda, Perfil perfil) {
+		int ptsExtras = 0;
+		for (Item item : perfil.getMeusItens()) {
+			if (item.getPersonagem().getAcao().equals(Acao.PEDIDO_AJUDA)) {
+				ptsExtras += item.getPersonagem().getPontos() * pedidoDeAjuda;
+				if (item.getHabilidade() != null)
+					ptsExtras += item.getHabilidade().getPontos() * pedidoDeAjuda;
+
+			}
+		}
+		return ptsExtras;
+	}
+
+	public boolean verificarSeAtingiuNovoNivelDeExperiencia(NivelExperiencia ne1, NivelExperiencia ne2) {
+		return ne1.getNome().equals(ne2.getNome());
+	}
+
+	public List<VisualizaPersonagem> listarPersonagem(List<Personagem> personagens) {
+		List<VisualizaPersonagem> list = new ArrayList<>();
+		for (Personagem personagem : personagens) {
+			list.add(new VisualizaPersonagem(personagem,
+					UrlImgPersonagem.identificarUrlPersonagem(personagem.getNome())));
+		}
+		return list;
+	}
+
+	public List<VisualizaHabilidade> listarHabilidade(List<Habilidade> habilidades) {
+		List<VisualizaHabilidade> list = new ArrayList<>();
+		for (Habilidade habilidade : habilidades) {
+			list.add(new VisualizaHabilidade(UrlImgHabilidade.identificarUrlHabilidade(habilidade.getNome()),
+					habilidade));
+		}
+		return list;
 	}
 
 	public Jogador getJogador() {
@@ -244,24 +466,24 @@ public class JogadorController implements Serializable {
 		this.qtdAtividade = qtdAtividade;
 	}
 
-	public GerenciadorScore getGerenciadorScore() {
-		return gerenciadorScore;
-	}
-
-	public void setGerenciadorScore(GerenciadorScore gerenciadorScore) {
-		this.gerenciadorScore = gerenciadorScore;
-	}
-
-	public VisualizaConquista getVisualizaConquistaRodadaAtual() {
-		return visualizaConquistaRodadaAtual;
-	}
-
-	public void setVisualizaConquistaRodadaAtual(VisualizaConquista visualizaConquistaRodadaAtual) {
-		this.visualizaConquistaRodadaAtual = visualizaConquistaRodadaAtual;
-	}
-
 	public GerenciadorConquista getGerenciadorConquista() {
 		return gerenciadorConquista;
+	}
+
+	public GerenciadorRecompensa getGerenciadorRecompensa() {
+		return gerenciadorRecompensa;
+	}
+
+	public void setGerenciadorRecompensa(GerenciadorRecompensa gerenciadorRecompensa) {
+		this.gerenciadorRecompensa = gerenciadorRecompensa;
+	}
+
+	public GerenciadorNivel getGerenciadorNivel() {
+		return gerenciadorNivel;
+	}
+
+	public void setGerenciadorNivel(GerenciadorNivel gerenciadorNivel) {
+		this.gerenciadorNivel = gerenciadorNivel;
 	}
 
 	public void setGerenciadorConquista(GerenciadorConquista gerenciadorConquista) {
@@ -300,11 +522,11 @@ public class JogadorController implements Serializable {
 		this.info = info;
 	}
 
-	public String getMsg() {
+	public List<String> getMsg() {
 		return msg;
 	}
 
-	public void setMsg(String msg) {
+	public void setMsg(List<String> msg) {
 		this.msg = msg;
 	}
 
@@ -314,6 +536,70 @@ public class JogadorController implements Serializable {
 
 	public void setHistorico(List<VisualizaHistorico> historico) {
 		this.historico = historico;
+	}
+
+	public VisualizaConquista getVisualizaConquista() {
+		return visualizaConquista;
+	}
+
+	public void setVisualizaConquista(VisualizaConquista visualizaConquista) {
+		this.visualizaConquista = visualizaConquista;
+	}
+
+	public GerenciadorPersonagem getGerenciadorPersonagem() {
+		return gerenciadorPersonagem;
+	}
+
+	public void setGerenciadorPersonagem(GerenciadorPersonagem gerenciadorPersonagem) {
+		this.gerenciadorPersonagem = gerenciadorPersonagem;
+	}
+
+	public GerenciadorHabilidade getGerenciadorHabilidade() {
+		return gerenciadorHabilidade;
+	}
+
+	public void setGerenciadorHabilidade(GerenciadorHabilidade gerenciadorHabilidade) {
+		this.gerenciadorHabilidade = gerenciadorHabilidade;
+	}
+
+	public List<VisualizaPersonagem> getPersonagensAdquiridos() {
+		return personagensAdquiridos;
+	}
+
+	public void setPersonagensAdquiridos(List<VisualizaPersonagem> personagensAdquiridos) {
+		this.personagensAdquiridos = personagensAdquiridos;
+	}
+
+	public List<VisualizaPersonagem> getPersonagensNaoAdquiridos() {
+		return personagensNaoAdquiridos;
+	}
+
+	public void setPersonagensNaoAdquiridos(List<VisualizaPersonagem> personagensNaoAdquiridos) {
+		this.personagensNaoAdquiridos = personagensNaoAdquiridos;
+	}
+
+	public List<VisualizaHabilidade> getHabilidadesAdquiridas() {
+		return habilidadesAdquiridas;
+	}
+
+	public void setHabilidadesAdquiridas(List<VisualizaHabilidade> habilidadesAdquiridas) {
+		this.habilidadesAdquiridas = habilidadesAdquiridas;
+	}
+
+	public List<VisualizaHabilidade> getHabilidadesNaoAdquiridas() {
+		return habilidadesNaoAdquiridas;
+	}
+
+	public void setHabilidadesNaoAdquiridas(List<VisualizaHabilidade> habilidadesNaoAdquiridas) {
+		this.habilidadesNaoAdquiridas = habilidadesNaoAdquiridas;
+	}
+
+	public int getPorcentagemNivel() {
+		return porcentagemNivel;
+	}
+
+	public void setPorcentagemNivel(int porcentagemNivel) {
+		this.porcentagemNivel = porcentagemNivel;
 	}
 
 }

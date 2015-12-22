@@ -9,14 +9,12 @@ public interface GerenciadorJogador {
 	public void salvar(Jogador jogador);
 
 	public void atualizar(Jogador jogador);
-	
-	public Jogador findByNicknameAndSenha(String nickname, String senha);
-	
+
 	public Jogador findByNickname(String nickname);
 
 	public Jogador findByNicknameComCooperacoes(String nickname);
-	
-	public List<Jogador> findAll();
-	
+
+	public Jogador findByNicknameAndSenha(String nickname, String senha);
+
 	public List<Jogador> findAllExceptMe(String nickname);
 }

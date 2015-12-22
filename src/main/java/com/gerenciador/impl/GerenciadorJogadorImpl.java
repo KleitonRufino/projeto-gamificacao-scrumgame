@@ -15,9 +15,6 @@ public class GerenciadorJogadorImpl implements GerenciadorJogador {
 	@Autowired
 	private JogadorRepositorio repJogador;
 
-	public GerenciadorJogadorImpl() {
-	}
-
 	@Override
 	public void salvar(Jogador jogador) {
 		this.repJogador.salvar(jogador);
@@ -26,11 +23,6 @@ public class GerenciadorJogadorImpl implements GerenciadorJogador {
 	@Override
 	public void atualizar(Jogador jogador) {
 		this.repJogador.update(jogador);
-	}
-
-	@Override
-	public Jogador findByNicknameAndSenha(String nickname, String senha) {
-		return this.repJogador.findByNicknameAndSenha(nickname, senha);
 	}
 
 	@Override
@@ -44,8 +36,8 @@ public class GerenciadorJogadorImpl implements GerenciadorJogador {
 	}
 
 	@Override
-	public List<Jogador> findAll() {
-		return this.repJogador.findAll();
+	public Jogador findByNicknameAndSenha(String nickname, String senha) {
+		return this.repJogador.findByNicknameAndSenha(nickname, senha);
 	}
 
 	@Override

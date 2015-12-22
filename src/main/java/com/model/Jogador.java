@@ -4,10 +4,14 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import com.enums.Avatar;
 
 @Entity
 public class Jogador {
@@ -17,6 +21,8 @@ public class Jogador {
 	private Long id;
 	private String nickname;
 	private String senha;
+	@Enumerated(EnumType.STRING)
+	private Avatar avatar;
 	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "jogador_que_ajudou_id")
 	private List<Cooperacao> cooperacoes;
@@ -27,6 +33,19 @@ public class Jogador {
 	public Jogador(String nickname) {
 		super();
 		this.nickname = nickname;
+	}
+
+	public Jogador(String nickname, String senha) {
+		super();
+		this.nickname = nickname;
+		this.senha = senha;
+	}
+
+	public Jogador(String nickname, String senha, Avatar avatar) {
+		super();
+		this.nickname = nickname;
+		this.senha = senha;
+		this.avatar = avatar;
 	}
 
 	public Long getId() {
@@ -51,6 +70,14 @@ public class Jogador {
 
 	public void setCooperacoes(List<Cooperacao> cooperacoes) {
 		this.cooperacoes = cooperacoes;
+	}
+
+	public Avatar getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(Avatar avatar) {
+		this.avatar = avatar;
 	}
 
 	@Override

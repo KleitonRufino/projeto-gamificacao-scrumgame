@@ -1,9 +1,9 @@
 package com.gerenciador;
 
-import com.model.Score;
+import com.model.Perfil;
 
 public interface GerenciadorAtividade {
 
-	public Score solicitarNovaAtividade(Score scoreRodada, int novasAtividadesFeitas);
+	public Perfil solicitarNovaAtividade(Perfil perfil, int novasAtividadesFeitas);
 
 }

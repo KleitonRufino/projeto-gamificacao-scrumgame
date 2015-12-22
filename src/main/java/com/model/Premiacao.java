@@ -16,14 +16,17 @@ public class Premiacao {
 	private Date data;
 	@OneToOne
 	private Conquista conquista;
+	@OneToOne
+	private Rodada rodada;
 
 	public Premiacao() {
 	}
 
-	public Premiacao(Date data, Conquista conquista) {
+	public Premiacao(Date data, Conquista conquista, Rodada rodada) {
 		super();
 		this.data = data;
 		this.conquista = conquista;
+		this.rodada = rodada;
 	}
 
 	public Long getId() {
@@ -50,9 +53,17 @@ public class Premiacao {
 		this.conquista = conquista;
 	}
 
+	public Rodada getRodada() {
+		return rodada;
+	}
+
+	public void setRodada(Rodada rodada) {
+		this.rodada = rodada;
+	}
+
 	@Override
 	public String toString() {
-		return "Premiacao [data=" + data + ", conquista=" + conquista + "]";
+		return "Premiacao [conquista=" + conquista + ", rodada=" + rodada + "]";
 	}
 
 }

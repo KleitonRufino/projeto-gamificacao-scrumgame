@@ -1,5 +1,6 @@
 package com.formandview;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.enums.NomeConquista;
@@ -12,21 +13,26 @@ public class VisualizaConquista {
 	private String amigoEmApurosI;
 	private String amigoEmApurosII;
 	private String amigoEmApurosIII;
+	private String amigoEmApurosIV;
 	private String conquistadorI;
 	private String conquistadorII;
 	private String conquistadorIII;
-	private String heroiDaSprint;
-	private String trabalhandoComAEquipe;
+	private String conquistadorIV;
+	private List<String> heroiDaSprint;
+	private List<String> trabalhandoComAEquipe;
 
 	public void preencheConquistas(List<Premiacao> premiacoes) {
 		amigoEmApurosI = UrlImg.AMGAPI_NoComplete.getUrl();
 		amigoEmApurosII = UrlImg.AMGAPII_NoComplete.getUrl();
 		amigoEmApurosIII = UrlImg.AMGAPIII_NoComplete.getUrl();
+		amigoEmApurosIV = UrlImg.AMGAPIV_NoComplete.getUrl();
 		conquistadorI = UrlImg.CONQI_NoComplete.getUrl();
 		conquistadorII = UrlImg.CONQII_NoComplete.getUrl();
 		conquistadorIII = UrlImg.CONQIII_NoComplete.getUrl();
-		heroiDaSprint = UrlImg.HERSPRINT_NoComplete.getUrl();
-		trabalhandoComAEquipe = UrlImg.TRAEQ_NoComplete.getUrl();
+		conquistadorIV = UrlImg.CONQIV_NoComplete.getUrl();
+		trabalhandoComAEquipe = new ArrayList<String>();
+		heroiDaSprint = new ArrayList<String>();
+
 		for (Premiacao premiacao : premiacoes) {
 			Conquista conquista = premiacao.getConquista();
 			if (NomeConquista.AMGAPI.equals(conquista.getNomeConquista()))
@@ -35,17 +41,28 @@ public class VisualizaConquista {
 				amigoEmApurosII = UrlImg.AMGAPII_Complete.getUrl();
 			else if (NomeConquista.AMGAPIII.equals(conquista.getNomeConquista()))
 				amigoEmApurosIII = UrlImg.AMGAPIII_Complete.getUrl();
+			else if (NomeConquista.AMGAPIV.equals(conquista.getNomeConquista()))
+				amigoEmApurosIV = UrlImg.AMGAPIV_Complete.getUrl();
 			else if (NomeConquista.CONQI.equals(conquista.getNomeConquista()))
 				conquistadorI = UrlImg.CONQI_Complete.getUrl();
 			else if (NomeConquista.CONQII.equals(conquista.getNomeConquista()))
 				conquistadorII = UrlImg.CONQII_Complete.getUrl();
 			else if (NomeConquista.CONQIII.equals(conquista.getNomeConquista()))
 				conquistadorIII = UrlImg.CONQIII_Complete.getUrl();
-			else if (NomeConquista.TRAEQ.equals(conquista.getNomeConquista()))
-				trabalhandoComAEquipe = UrlImg.TRAEQ_Complete.getUrl();
-			else if (NomeConquista.HERSPRINT.equals(conquista.getNomeConquista()))
-				heroiDaSprint = UrlImg.HERSPRINT_Complete.getUrl();
+			else if (NomeConquista.CONQIV.equals(conquista.getNomeConquista()))
+				conquistadorIV = UrlImg.CONQIV_Complete.getUrl();
+			else if (NomeConquista.TRAEQ.equals(conquista.getNomeConquista())) {
+				trabalhandoComAEquipe.add(UrlImg.TRAEQ_Complete.getUrl());
+			} else if (NomeConquista.HERSPRINT.equals(conquista.getNomeConquista())) {
+				heroiDaSprint.add(UrlImg.HERSPRINT_Complete.getUrl());
+			}
 		}
+
+		if (heroiDaSprint.size() == 0)
+			heroiDaSprint.add(UrlImg.HERSPRINT_NoComplete.getUrl());
+
+		if (trabalhandoComAEquipe.size() == 0)
+			trabalhandoComAEquipe.add(UrlImg.TRAEQ_NoComplete.getUrl());
 	}
 
 	public String getAmigoEmApurosI() {
@@ -96,20 +113,36 @@ public class VisualizaConquista {
 		this.conquistadorIII = conquistadorIII;
 	}
 
-	public String getHeroiDaSprint() {
+	public List<String> getHeroiDaSprint() {
 		return heroiDaSprint;
 	}
 
-	public void setHeroiDaSprint(String heroiDaSprint) {
+	public void setHeroiDaSprint(List<String> heroiDaSprint) {
 		this.heroiDaSprint = heroiDaSprint;
 	}
 
-	public String getTrabalhandoComAEquipe() {
+	public List<String> getTrabalhandoComAEquipe() {
 		return trabalhandoComAEquipe;
 	}
 
-	public void setTrabalhandoComAEquipe(String trabalhandoComAEquipe) {
+	public void setTrabalhandoComAEquipe(List<String> trabalhandoComAEquipe) {
 		this.trabalhandoComAEquipe = trabalhandoComAEquipe;
+	}
+
+	public String getAmigoEmApurosIV() {
+		return amigoEmApurosIV;
+	}
+
+	public void setAmigoEmApurosIV(String amigoEmApurosIV) {
+		this.amigoEmApurosIV = amigoEmApurosIV;
+	}
+
+	public String getConquistadorIV() {
+		return conquistadorIV;
+	}
+
+	public void setConquistadorIV(String conquistadorIV) {
+		this.conquistadorIV = conquistadorIV;
 	}
 
 }

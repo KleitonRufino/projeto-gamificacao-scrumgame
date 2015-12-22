@@ -2,19 +2,18 @@ package com.gerenciador.impl;
 
 import org.springframework.stereotype.Service;
 
+import com.enums.Pontuacao;
 import com.gerenciador.GerenciadorAtividade;
-import com.model.Pontuacao;
-import com.model.Score;
+import com.model.Perfil;
 
 @Service
 public class GerenciadorAtividadeImpl implements GerenciadorAtividade {
 
 	@Override
-	public Score solicitarNovaAtividade(Score scoreRodada, int novasAtividadesFeitas) {
-		scoreRodada.setCountAtividadesNaRodada(scoreRodada.getCountAtividadesNaRodada() + novasAtividadesFeitas);
-		scoreRodada.setPtsDeAtividadeNaRodada(
-				scoreRodada.getPtsDeAtividadeNaRodada() + (novasAtividadesFeitas * Pontuacao.QUINZE.getPts()));
-
-		return scoreRodada;
+	public Perfil solicitarNovaAtividade(Perfil perfil, int novasAtividadesFeitas) {
+		perfil.setCountAtividades(perfil.getCountAtividades() + novasAtividadesFeitas);
+		perfil.setPtsDeAtividade(perfil.getPtsDeAtividade() + (novasAtividadesFeitas * Pontuacao.QUINZE.getPts()));
+		return perfil;
 	}
+
 }

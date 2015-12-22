@@ -1,9 +1,19 @@
 package com.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import com.enums.Avatar;
 
 @Entity
 public class Perfil {
@@ -11,29 +21,36 @@ public class Perfil {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private int nivelExperiencia;
+	@OneToOne
+	private Nivel nivel;
 	private int ptsTotais;
 	private int ptsDeAmigo;
-	private int ptsDeConquista;
 	private int ptsDeAtividade;
+	private int ptsExtras;
 	private int estrelas;
 	private int countAtividades;
 	private int countCooperacoes;
+	@Enumerated(EnumType.STRING)
+	private Avatar avatar;
 	@OneToOne
 	private Jogador jogador;
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private List<Premiacao> premiacoes = new ArrayList<Premiacao>();
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "perfil")
+	private List<Item> meusItens = new ArrayList<Item>();
 
 	public Perfil() {
 
 	}
 
-	public Perfil(int nivelExperiencia, int ptsTotais, int ptsDeAmigo, int ptsDeConquista, int ptsDeAtividade,
-			int estrelas, int countAtividades, int countCooperacoes) {
+	public Perfil(Nivel nivel, int ptsTotais, int ptsDeAmigo, int ptsDeAtividade, int ptsExtras, int estrelas,
+			int countAtividades, int countCooperacoes) {
 		super();
-		this.nivelExperiencia = nivelExperiencia;
+		this.nivel = nivel;
 		this.ptsTotais = ptsTotais;
 		this.ptsDeAmigo = ptsDeAmigo;
-		this.ptsDeConquista = ptsDeConquista;
 		this.ptsDeAtividade = ptsDeAtividade;
+		this.ptsExtras = ptsExtras;
 		this.estrelas = estrelas;
 		this.countAtividades = countAtividades;
 		this.countCooperacoes = countCooperacoes;
@@ -61,14 +78,6 @@ public class Perfil {
 
 	public void setPtsDeAmigo(int ptsDeAmigo) {
 		this.ptsDeAmigo = ptsDeAmigo;
-	}
-
-	public int getPtsDeConquista() {
-		return ptsDeConquista;
-	}
-
-	public void setPtsDeConquista(int ptsDeConquista) {
-		this.ptsDeConquista = ptsDeConquista;
 	}
 
 	public int getPtsDeAtividade() {
@@ -103,28 +112,59 @@ public class Perfil {
 		this.countCooperacoes = countCooperacoes;
 	}
 
-	public int getNivelExperiencia() {
-		return nivelExperiencia;
-	}
-
-	public void setNivelExperiencia(int nivelExperiencia) {
-		this.nivelExperiencia = nivelExperiencia;
-	}
-
-	@Override
-	public String toString() {
-		return "Perfil [nivelExperiencia=" + nivelExperiencia + ", ptsTotais=" + ptsTotais + ", ptsDeAmigo="
-				+ ptsDeAmigo + ", ptsDeConquista=" + ptsDeConquista + ", ptsDeAtividade=" + ptsDeAtividade
-				+ ", estrelas=" + estrelas + ", countAtividades=" + countAtividades + ", countCooperacoes="
-				+ countCooperacoes + ", nicknameJogador=" + jogador.getNickname() + "]";
-	}
-
 	public Jogador getJogador() {
 		return jogador;
 	}
 
 	public void setJogador(Jogador jogador) {
 		this.jogador = jogador;
+	}
+
+	public List<Premiacao> getPremiacoes() {
+		return premiacoes;
+	}
+
+	public void setPremiacoes(List<Premiacao> premiacoes) {
+		this.premiacoes = premiacoes;
+	}
+
+	public int getPtsExtras() {
+		return ptsExtras;
+	}
+
+	public void setPtsExtras(int ptsExtras) {
+		this.ptsExtras = ptsExtras;
+	}
+
+	public Nivel getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(Nivel nivel) {
+		this.nivel = nivel;
+	}
+
+	public List<Item> getMeusItens() {
+		return meusItens;
+	}
+
+	public void setMeusItens(List<Item> meusItens) {
+		this.meusItens = meusItens;
+	}
+
+	@Override
+	public String toString() {
+		return "Perfil [nivel=" + nivel.getNivel() + ", ptsTotais=" + ptsTotais + ", ptsDeAmigo=" + ptsDeAmigo
+				+ ", ptsDeAtividade=" + ptsDeAtividade + ", ptsExtras=" + ptsExtras + ", estrelas=" + estrelas
+				+ ", countAtividades=" + countAtividades + ", countCooperacoes=" + countCooperacoes + "]";
+	}
+
+	public Avatar getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(Avatar avatar) {
+		this.avatar = avatar;
 	}
 
 }

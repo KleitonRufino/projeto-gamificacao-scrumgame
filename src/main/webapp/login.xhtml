@@ -5,8 +5,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<link
@@ -38,9 +38,7 @@
 						<p:growl id="growl" showDetail="true" sticky="true" />
 						<h:form accept-charset="UTF-8" role="form" class="form-signin">
 							<fieldset>
-								<label class="panel-login">
-									<div class="login_result"></div>
-								</label>
+								<label class="panel-login"> </label>
 								<h:inputText class="form-control" pt:placeholder="Username"
 									id="username" type="text"
 									value="#{loginController.jogador.nickname}" />
@@ -51,6 +49,7 @@
 								<h:commandButton action="#{loginController.login}"
 									class="btn btn-lg btn-info btn-block" type="submit" id="login"
 									value="Login »" />
+								<h:link value="Registre-se" outcome="cadastro"/>	
 							</fieldset>
 						</h:form>
 					</div>

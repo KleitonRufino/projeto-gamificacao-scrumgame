@@ -1,7 +1,6 @@
 package com.gerenciador.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +9,10 @@ import org.springframework.stereotype.Service;
 import com.enums.NomeConquista;
 import com.gerenciador.GerenciadorConquista;
 import com.model.Conquista;
-import com.model.Pontuacao;
+import com.model.Jogador;
+import com.model.Perfil;
 import com.model.Premiacao;
-import com.model.Score;
+import com.model.Rodada;
 import com.repositorio.ConquistaRepositorio;
 
 @Service
@@ -32,75 +32,72 @@ public class GerenciadorConquistaImpl implements GerenciadorConquista {
 	}
 
 	@Override
-	public List<Conquista> verificarNovasConquistasParaAtividade(Score scoreDaRodada) {
+	public List<Conquista> verificarNovasConquistasParaAtividade(Perfil perfil, List<Conquista> novasConquistas) {
 		List<NomeConquista> nomeConquistasAdquiridas = new ArrayList<NomeConquista>();
-		List<Conquista> minhasConquistas = new ArrayList<>();
-		for (Premiacao premiacoes : scoreDaRodada.getPremiacoes()) {
-			minhasConquistas.add(premiacoes.getConquista());
+		List<Conquista> antigasConquistas = new ArrayList<Conquista>();
+		for (Premiacao premiacoes : perfil.getPremiacoes()) {
+			antigasConquistas.add(premiacoes.getConquista());
 		}
-		if (scoreDaRodada.getCountAtividadesNaRodada() >= 1) {
+		if (perfil.getCountAtividades() >= NomeConquista.CONQI.getNumero()) {
 			nomeConquistasAdquiridas.add(NomeConquista.CONQI);
-			if (scoreDaRodada.getCountAtividadesNaRodada() >= 3) {
+			if (perfil.getCountAtividades() >= NomeConquista.CONQII.getNumero()) {
 				nomeConquistasAdquiridas.add(NomeConquista.CONQII);
-				if (scoreDaRodada.getCountAtividadesNaRodada() >= 5) {
+				if (perfil.getCountAtividades() >= NomeConquista.CONQIII.getNumero()) {
 					nomeConquistasAdquiridas.add(NomeConquista.CONQIII);
+					if (perfil.getCountAtividades() >= NomeConquista.CONQIV.getNumero())
+						nomeConquistasAdquiridas.add(NomeConquista.CONQIV);
 				}
 			}
 		}
-		List<Conquista> novasConquistas = new ArrayList<Conquista>();
 		for (NomeConquista nomeConquista : nomeConquistasAdquiridas) {
 			Conquista c = new Conquista();
 			c.setNomeConquista(nomeConquista);
-			if (!verificarSePossuiConquista(c, minhasConquistas)) {
+			if (!verificarSePossuiConquista(c, antigasConquistas)) {
 				c = findByNome(nomeConquista);
 				novasConquistas.add(c);
 			}
 		}
 		return novasConquistas;
-		// jogador = atribuirConquistaERecompensa(jogador, score,
-		// nomeConquistasAdquiridas);
-		// break;
-
 	}
 
 	@Override
-	public List<Conquista> verificarNovasConquistasParaCooperacao(Score scoreDaRodada) {
+	public List<Conquista> verificarNovasConquistasParaCooperacao(Jogador jogador, Perfil perfil,
+			List<Conquista> novasConquistas, Rodada rodadaAtiva) {
 		List<NomeConquista> nomeConquistasAdquiridas = new ArrayList<NomeConquista>();
-		List<Conquista> minhasConquistas = new ArrayList<>();
-		for (Premiacao premiacoes : scoreDaRodada.getPremiacoes()) {
-			minhasConquistas.add(premiacoes.getConquista());
+		List<Conquista> antigasConquistas = new ArrayList<Conquista>();
+		for (Premiacao premiacoes : perfil.getPremiacoes()) {
+			antigasConquistas.add(premiacoes.getConquista());
 		}
-		if (scoreDaRodada.getCountCooperacoesNaRodada() >= 1) {
+		if (perfil.getCountCooperacoes() >= NomeConquista.AMGAPI.getNumero()) {
 			nomeConquistasAdquiridas.add(NomeConquista.AMGAPI);
-			if (scoreDaRodada.getCountCooperacoesNaRodada() >= 3) {
+			if (perfil.getCountCooperacoes() >= NomeConquista.AMGAPII.getNumero()) {
 				nomeConquistasAdquiridas.add(NomeConquista.AMGAPII);
-				if (scoreDaRodada.getCountCooperacoesNaRodada() >= 5) {
+				if (perfil.getCountCooperacoes() >= NomeConquista.AMGAPIII.getNumero()) {
 					nomeConquistasAdquiridas.add(NomeConquista.AMGAPIII);
+					if (perfil.getCountCooperacoes() >= NomeConquista.AMGAPIV.getNumero()) {
+						nomeConquistasAdquiridas.add(NomeConquista.AMGAPIV);
+					}
 				}
 			}
 		}
-		List<Conquista> novasConquistas = new ArrayList<Conquista>();
+
+		if (this.repConquista.verificarCountTrabalhoEmEquipeNaRodada(jogador, rodadaAtiva)) {
+			nomeConquistasAdquiridas.add(NomeConquista.TRAEQ);
+		}
+
 		for (NomeConquista nomeConquista : nomeConquistasAdquiridas) {
 			Conquista c = new Conquista();
 			c.setNomeConquista(nomeConquista);
-			if (!verificarSePossuiConquista(c, minhasConquistas)) {
+			if (c.getNomeConquista().equals(NomeConquista.TRAEQ)
+					&& !verificarSePossuiConquistaNaRodada(perfil, c, rodadaAtiva)) {
+				c = findByNome(NomeConquista.TRAEQ);
+				novasConquistas.add(c);
+			} else if (!verificarSePossuiConquista(c, antigasConquistas)) {
 				c = findByNome(nomeConquista);
 				novasConquistas.add(c);
 			}
 		}
 		return novasConquistas;
-	}
-
-	@Override
-	public Score atribuirConquistaERecompensaAoScore(Score scoreDaRodada, List<Conquista> conquistas) {
-
-		for (Conquista conquista : conquistas) {
-			scoreDaRodada.setEstrelasNaRodada(scoreDaRodada.getEstrelasNaRodada() + conquista.getRecompensaEmEstrela());
-			scoreDaRodada.setPtsDeConquistaNaRodada(scoreDaRodada.getPtsDeConquistaNaRodada()
-					+ (conquista.getRecompensaEmEstrela() * Pontuacao.CINCOPTS.getPts()));
-			scoreDaRodada.getPremiacoes().add(new Premiacao(new Date(), conquista));
-		}
-		return scoreDaRodada;
 	}
 
 	@Override
@@ -111,6 +108,17 @@ public class GerenciadorConquistaImpl implements GerenciadorConquista {
 	@Override
 	public boolean verificarSePossuiConquista(Conquista novaConquista, List<Conquista> conquistas) {
 		return conquistas.contains(novaConquista);
+	}
+
+	@Override
+	public boolean verificarSePossuiConquistaNaRodada(Perfil perfil, Conquista conquista, Rodada rodadaAtiva) {
+		for (Premiacao p : perfil.getPremiacoes()) {
+			if (p.getConquista().getNomeConquista().equals(conquista.getNomeConquista())
+					&& p.getRodada().getNumero() == rodadaAtiva.getNumero()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

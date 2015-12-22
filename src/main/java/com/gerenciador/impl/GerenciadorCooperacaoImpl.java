@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import com.gerenciador.GerenciadorCooperacao;
 import com.model.Cooperacao;
 import com.model.Jogador;
-import com.model.Pontuacao;
 import com.model.Rodada;
-import com.model.Score;
 import com.repositorio.CooperacaoRepositorio;
 
 @Service
@@ -36,24 +34,6 @@ public class GerenciadorCooperacaoImpl implements GerenciadorCooperacao {
 		cooperacao.setJogadorAjudado(jogadorAjudado);
 		cooperacao.setRodada(rodada);
 		return cooperacao;
-	}
-
-	@Override
-	public Score solicitarNovaCooperacao(Score scoreRodada, int novasCooperacoesFeitas) {
-		// jogador.getPerfil().setCountCooperacoes(jogador.getPerfil().getCountCooperacoes()
-		// + novasCooperacoesFeitas);
-		// jogador.getPerfil().setPtsDeAmigo(jogador.getPerfil().getPtsDeAmigo()
-		// + (novasCooperacoesFeitas * 10));
-		scoreRodada.setCountCooperacoesNaRodada(scoreRodada.getCountCooperacoesNaRodada() + novasCooperacoesFeitas);
-		scoreRodada.setPtsDeAmigoNaRodada(
-				scoreRodada.getPtsDeAmigoNaRodada() + (novasCooperacoesFeitas * Pontuacao.DEZPTS.getPts()));
-		return scoreRodada;
-	}
-
-	@Override
-	public Score solicitarPtsPedidoDeAjuda(Score scoreRodada, int qtdPedidosDeAjuda) {
-		scoreRodada.setPtsDeAmigoNaRodada(scoreRodada.getPtsDeAmigoNaRodada() + (Pontuacao.CINCOPTS.getPts() * qtdPedidosDeAjuda));
-		return scoreRodada;
 	}
 
 }

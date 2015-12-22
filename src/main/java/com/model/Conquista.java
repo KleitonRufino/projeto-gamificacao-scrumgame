@@ -18,15 +18,17 @@ public class Conquista {
 	private NomeConquista nomeConquista;
 	private String descricao;
 	private int recompensaEmEstrela;
+	private int recompensaEmPontos;
 
 	public Conquista() {
 	}
 
-	public Conquista(NomeConquista nomeConquista, String descricao, int recompensaEmEstrela) {
+	public Conquista(NomeConquista nomeConquista, String descricao, int recompensaEmEstrela, int recompensaEmPontos) {
 		super();
 		this.nomeConquista = nomeConquista;
 		this.descricao = descricao;
 		this.recompensaEmEstrela = recompensaEmEstrela;
+		this.recompensaEmPontos = recompensaEmPontos;
 	}
 
 	public Long getId() {
@@ -85,7 +87,8 @@ public class Conquista {
 
 	@Override
 	public String toString() {
-		return "Conquista [nomeConquista=" + nomeConquista + ", descricao=" + descricao + "]";
+		return "Conquista [nomeConquista=" + nomeConquista + ", descricao=" + descricao + ", recompensaEmEstrela="
+				+ recompensaEmEstrela + ", recompensaEmPontos=" + recompensaEmPontos + "]";
 	}
 
 }

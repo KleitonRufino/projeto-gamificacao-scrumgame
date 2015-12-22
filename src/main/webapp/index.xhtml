@@ -7,23 +7,24 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:define name="conteudo">
-		<f:event listener="#{jogadorController.atualizaInformacoesDoJogador}"
-			type="preRenderView"></f:event>
 
-	
+
 
 		<c:if test="#{jogadorController.info == true}">
 			<div class="alert-group">
 				<div class="alert alert-info alert-dismissable">
 					<button type="button" class="close" data-dismiss="alert"
-						aria-hidden="true">
-						<f:ajax event="click" listener="#{jogadorController.atualizaMsg}" />
-						×
-					</button>
-					<strong><h:outputText value="#{jogadorController.msg}" /></strong>
+						aria-hidden="true">×</button>
+					<c:forEach items="#{jogadorController.msg}" var="msg">
+						<strong>#{msg} <br /></strong>
+					</c:forEach>
+
 				</div>
 			</div>
 		</c:if>
+
+		<f:event listener="#{jogadorController.atualizaInformacoesDoJogador}"
+			type="preRenderView"></f:event>
 
 		<!-- Modal 1-->
 		<div id="myModal1" class="modal fade" tabindex="-1" role="dialog">
@@ -119,6 +120,29 @@
 			</div>
 		</div>
 
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="progress-bar-title-button"
+					style="background-color: #337AB7;">
+					<div class="progress-bar-text-button">
+						<h:link value="Nível" outcome="nivel.xhtml" style="color:white;" />
+					</div>
+				</div>
+				<div class="progress-bar-container" style="background-color: white;">
+					<div class="progress">
+						<div data-percentage="0%" class="progress-bar progress-bar-info"
+							role="progressbar" aria-valuemin="0" aria-valuemax="100"
+							style="width: #{jogadorController.porcentagemNivel}%">
+							<span style="color: black;">#{jogadorController.perfil.nivel.nivel}/14</span>
+						</div>
+
+					</div>
+				</div>
+
+				<div style="clear: both; height: 20px;"></div>
+			</div>
+		</div>
 		<div class="row row-offcanvas row-offcanvas-right">
 			<div class="col-xs-12 col-sm-9">
 				<p class="pull-right visible-xs">
@@ -126,40 +150,117 @@
 						data-toggle="offcanvas">Toggle nav</button>
 				</p>
 
+
+
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title">
-							<b>Meu Perfil</b>
-						</h3>
+						<h3 class="panel-title">MEU PERFIL -
+							#{jogadorController.jogador.nickname}</h3>
 					</div>
 					<div class="panel-body">
-						<h3>
-							<h:outputText value="#{jogadorController.jogador.nickname}" />
-						</h3>
-						<h:panelGrid columns="2">
-							<h:outputText
-								value="NÍVEL EXPERIÊNCIA: #{jogadorController.perfil.nivelExperiencia} &#160;"
-								style="size: 5;" />
-							<h:outputText
-								value="PONTOS TOTAIS: #{jogadorController.perfil.ptsTotais} &#160;"
-								style="size: 5;" />
-							<h:outputText
-								value="PONTOS DE AMIGO: #{jogadorController.perfil.ptsDeAmigo} &#160;"
-								style="size: 5;" />
-							<h:outputText
-								value="PONTOS DE CONQUISTA: #{jogadorController.perfil.ptsDeConquista} &#160;"
-								style="size: 5;" />
-							<p>
-								ESTRELAS <SPAN class="glyphicon glyphicon-star text-info" />:
-								#{jogadorController.perfil.estrelas}
-							</p>
-						</h:panelGrid>
+						<div class="row">
+							<div class="col-md-3 col-lg-3 " align="center">
+								<h:graphicImage library="img" name="avatar#{jogadorController.jogador.avatar.num}.png" />
+
+							</div>
+							<div class=" col-md-9 col-lg-9 ">
+								<table class="table table-user-information">
+									<tbody>
+										<tr>
+											<td>Pontos Totais:</td>
+											<td><h:outputText
+													value="#{jogadorController.perfil.ptsTotais}" /></td>
+										</tr>
+										<tr>
+											<td>Pontos de Amigo:</td>
+											<td><h:outputText
+													value="#{jogadorController.perfil.ptsDeAmigo}" /></td>
+										</tr>
+										<tr>
+											<td>Pontos de Atividade:</td>
+											<td><h:outputText
+													value="#{jogadorController.perfil.ptsDeAtividade}" /></td>
+										</tr>
+										<tr>
+											<td>Pontos Extras:</td>
+											<td><h:outputText
+													value="#{jogadorController.perfil.ptsExtras}" /></td>
+										</tr>
+										<tr>
+											<td>Estrelas:</td>
+											<td><h:outputText
+													value="#{jogadorController.perfil.estrelas}" /> <SPAN
+												class="glyphicon glyphicon-star text-info" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 
+				<h1 style="color: #1859A2;">
+					<b>Meus Personagens</b>
+					<hr />
+				</h1>
+
+				<div class="row">
+					<c:choose>
+						<c:when test="#{empty jogadorController.personagensAdquiridos}">
+							<h:outputText value="Você não possui nenhum personagem" />
+						</c:when>
+						<c:otherwise>
+							<c:forEach items="#{jogadorController.personagensAdquiridos}"
+								var="visualiza">
+								<div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+									<span class="thumbnail fancybox" rel="ligthbox"> <h:graphicImage
+											library="img" name="#{visualiza.url.url}" />
+										<div class='text-right'>
+											<small class='text-muted'>#{visualiza.personagem.nome}</small><br />
+											<small class='text-muted'>Recompensa:
+												#{visualiza.personagem.pontos} pontos extras</small><br /> <small
+												class='text-muted'>Ação:
+												#{visualiza.personagem.acao}</small>
+										</div> <!-- text-right / end -->
+									</span>
+								</div>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</div>
 
 				<h1 style="color: #1859A2;">
-					<b>Conquistas Rodada Atual</b>
+					<b>Minhas Habilidades</b>
+					<hr />
+				</h1>
+				<div class="row">
+					<c:choose>
+						<c:when test="#{empty jogadorController.habilidadesAdquiridas}">
+							<h:outputText value="Você não possui nenhuma habilidade" />
+						</c:when>
+						<c:otherwise>
+							<c:forEach items="#{jogadorController.habilidadesAdquiridas}"
+								var="visualiza">
+								<div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+									<span class="thumbnail fancybox" rel="ligthbox"> <h:graphicImage
+											library="img" name="#{visualiza.url.url}" />
+										<div class='text-right'>
+											<small class='text-muted'>#{visualiza.habilidade.nome}</small><br />
+											<small class='text-muted'>Personagem:
+												#{visualiza.habilidade.personagem.nome}</small><br /> <small
+												class='text-muted'>Aumento em pontos: +
+												#{visualiza.habilidade.pontos} </small>
+										</div> <!-- text-right / end -->
+									</span>
+								</div>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<h1 style="color: #1859A2;">
+					<b>Conquistas</b>
+					<hr />
 				</h1>
 				<div class="gallery">
 					<div class="container">
@@ -167,37 +268,53 @@
 							<div class="col-sm-10">
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosI}" />
+										name="#{jogadorController.visualizaConquista.amigoEmApurosI}" />
 								</div>
 
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosII}" />
+										name="#{jogadorController.visualizaConquista.amigoEmApurosII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.amigoEmApurosIII}" />
+										name="#{jogadorController.visualizaConquista.amigoEmApurosIII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorI}" />
+										name="#{jogadorController.visualizaConquista.amigoEmApurosIV}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorII}" />
+										name="#{jogadorController.visualizaConquista.conquistadorI}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.conquistadorIII}" />
+										name="#{jogadorController.visualizaConquista.conquistadorII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.trabalhandoComAEquipe}" />
+										name="#{jogadorController.visualizaConquista.conquistadorIII}" />
 								</div>
 								<div class="col-sm-4">
 									<h:graphicImage class="thumbnail img-responsive" library="img"
-										name="#{jogadorController.visualizaConquistaRodadaAtual.heroiDaSprint}" />
+										name="#{jogadorController.visualizaConquista.conquistadorIV}" />
 								</div>
+								<c:forEach
+									items="#{jogadorController.visualizaConquista.trabalhandoComAEquipe}"
+									var="t">
+									<div class="col-sm-4">
+										<h:graphicImage class="thumbnail img-responsive" library="img"
+											name="#{t}" />
+									</div>
+								</c:forEach>
+								<c:forEach
+									items="#{jogadorController.visualizaConquista.heroiDaSprint}"
+									var="h">
+									<div class="col-sm-4">
+										<h:graphicImage class="thumbnail img-responsive" library="img"
+											name="#{h}" />
+									</div>
+								</c:forEach>
 								<hr />
 								<hr />
 							</div>
@@ -205,9 +322,111 @@
 					</div>
 				</div>
 
+				<!-- ITEM PERSONAGEM -->
+
+				<h1 style="color: #1859A2;">
+					<b>Obter Item - Personagem</b>
+					<hr />
+				</h1>
+				<div class="row">
+					<c:choose>
+						<c:when
+							test="#{not empty jogadorController.personagensNaoAdquiridos}">
+							<c:forEach items="#{jogadorController.personagensNaoAdquiridos}"
+								var="visualiza">
+								<div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+									<span class="thumbnail fancybox" rel="ligthbox"> <h:graphicImage
+											library="img" name="#{visualiza.url.url}" />
+										<div class='text-right'>
+											<small class='text-muted'>#{visualiza.personagem.nome}</small><br />
+											<small class='text-muted'>Preco:
+												#{visualiza.personagem.preco}</small><br /> <small
+												class='text-muted'>Nivel Desbloqueio:
+												#{visualiza.personagem.nivelDesbloqueio}</small><br /> <small
+												class='text-muted'>Recompensa:
+												#{visualiza.personagem.pontos} pontos extras</small><br /> <small
+												class='text-muted'>Ação:
+												#{visualiza.personagem.acao}</small><br/>
+											<c:choose>
+												<c:when
+													test="#{jogadorController.perfil.nivel.nivel >= visualiza.personagem.nivelDesbloqueio and jogadorController.perfil.estrelas >= visualiza.personagem.preco}">
+													<h:form>
+														<h:commandButton styleClass="btn btn-primary"
+															value="Comprar"
+															action="#{jogadorController.obterPersonagem(visualiza.personagem)}">
+														</h:commandButton>
+													</h:form>
+												</c:when>
+												<c:otherwise>
+													<small class='text-muted text-danger'>Você ainda
+														não possui todas as condições para obter este item</small>
+												</c:otherwise>
+											</c:choose>
+										</div>
+									</span>
+								</div>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<h:outputText value="Você já possui todas os personagens" />
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<!-- ITEM HABILIDADE -->
+
+				<h1 style="color: #1859A2;">
+					<b>Obter Item - Habilidade</b>
+					<hr />
+				</h1>
+				<div class="row">
+					<c:choose>
+						<c:when
+							test="#{not empty jogadorController.habilidadesNaoAdquiridas}">
+							<c:forEach items="#{jogadorController.habilidadesNaoAdquiridas}"
+								var="visualiza">
+								<div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+									<span class="thumbnail fancybox" rel="ligthbox"> <h:graphicImage
+											library="img" name="#{visualiza.url.url}" />
+										<div class='text-right'>
+											<small class='text-muted'>#{visualiza.habilidade.nome}</small><br />
+											<small class='text-muted'>Preco:
+												#{visualiza.habilidade.preco}</small><br /> <small
+												class='text-muted'>Nivel Desbloqueio:
+												#{visualiza.habilidade.nivelDesbloqueio}</small><br /> <small
+												class='text-muted'>Personagem:
+												#{visualiza.habilidade.personagem.nome}</small><br /> <small
+												class='text-muted'>Aumento em pontos: +
+												#{visualiza.habilidade.pontos}</small><br />
+											<c:choose>
+												<c:when
+													test="#{jogadorController.perfil.nivel.nivel >= visualiza.habilidade.nivelDesbloqueio and jogadorController.perfil.estrelas >= visualiza.habilidade.preco}">
+													<h:form>
+														<h:commandButton styleClass="btn btn-primary"
+															value="Comprar"
+															action="#{jogadorController.obterHabilidade(visualiza.habilidade)}">
+														</h:commandButton>
+													</h:form>
+												</c:when>
+												<c:otherwise>
+													<small class='text-muted text-danger'>Você ainda
+														não possui todas as condições para obter este item</small>
+												</c:otherwise>
+											</c:choose>
+										</div>
+									</span>
+								</div>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<h:outputText value="Você já possui todas as habilidades" />
+						</c:otherwise>
+					</c:choose>
+				</div>
 			</div>
 
 			<!-- MENU LATERAL -->
+
 			<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
 				<div class="list-group">
 					<div class="panel panel-primary">
@@ -236,19 +455,7 @@
 										</a> <span class="label label-info"><h:outputText
 													value="#{jogadorController.perfil.countAtividades}" /> </span></td>
 									</tr>
-									<tr>
-										<td><h:panelGrid columns="2">
-												<span class="glyphicon glyphicon-hdd" aria-hidden="true" />
-												<h:panelGroup>
-													<h:form>
-														<h:outputText value="." />
-														<h:commandLink
-															action="#{jogadorController.historicoConquistas}"
-															value="Histórico Conquistas" />
-													</h:form>
-												</h:panelGroup>
-											</h:panelGrid></td>
-									</tr>
+
 								</table>
 							</div>
 						</div>
@@ -256,8 +463,8 @@
 				</div>
 			</div>
 
-				
-				
+
+
 		</div>
 	</ui:define>
 </ui:composition>
