@@ -1,0 +1,341 @@
+<ui:composition template="/WEB-INF/templates/layoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<ui:define name="conteudo">
+		<h:outputStylesheet library="css" name="timeline.css" />
+		<div class="container">
+			<div class="container">
+				<div class="page-header">
+					<h1 id="timeline">Níveis</h1>
+				</div>
+				<ul class="timeline">
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 14}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 14</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 14 e aumente em 6 pts suas ações.<BR /> Pontos a
+									Conquistar: 1040 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 13}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 13</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 13 e aumente em 5 pts suas ações.<BR /> Pontos a
+									Conquistar: 940 pts
+								</blockquote>
+							</div>
+						</div></li>
+
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 12}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 12</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 12 e aumente em 5 pts suas ações.<BR /> Pontos a
+									Conquistar: 860 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 11}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 11</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 11 e aumente em 5 pts suas ações.<BR /> Pontos a
+									Conquistar: 770 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 10}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 10</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 10 e aumente em 5 pts suas ações.<BR /> Pontos a
+									Conquistar: 680 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 9}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 9</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 9 e aumente em 4 pts suas ações.<BR /> Pontos a
+									Conquistar: 600 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 8}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 8</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 8 e aumente em 4 pts suas ações.<BR /> Pontos a
+									Conquistar: 520 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 7}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 7</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 7 e aumente em 4 pts suas ações.<BR /> Pontos a
+									Conquistar: 440 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 6}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 6</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 6 e aumente em 3 pts suas ações.<BR /> Pontos a
+									Conquistar: 370 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 5}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 5</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 5 e aumente em 3 pts suas ações.<BR /> Pontos a
+									Conquistar: 300 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 4}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 4</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 4 e aumente em 2 pts suas ações.<BR /> Pontos a
+									Conquistar: 230 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 3}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 3</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 3 e aumente em 2 pts suas ações.<BR /> Pontos a
+									Conquistar: 170 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 2}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 2</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 2 e aumente em 1 pt suas ações.<BR /> Pontos a
+									Conquistar: 110 pts
+								</blockquote>
+							</div>
+						</div></li>
+					<li class="timeline-inverted"><c:choose>
+							<c:when test="#{jogadorController.perfil.nivel.nivel >= 1}">
+								<div class="timeline-badge success">
+									<i class="glyphicon glyphicon-ok"></i>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="timeline-badge">
+									<i class="glyphicon glyphicon-remove"></i>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h4 class="timeline-title">Nível 1</h4>
+							</div>
+							<div class="timeline-body">
+								<blockquote>
+									Atinja Nível 1 e aumente em 1 pt suas ações.<BR /> Pontos a
+									Conquistar: 50 pts
+								</blockquote>
+							</div>
+						</div></li>
+				</ul>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

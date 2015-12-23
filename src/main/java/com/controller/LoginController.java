@@ -259,10 +259,10 @@ public class LoginController {
 	}
 
 	public void addCaixa() {
-		Caixa caixa1 = new Caixa("Você ganhou + 2 estrelas", TipoRecompensa.ESTRELAS, 2);
-		Caixa caixa2 = new Caixa("Você ganhou + 3 estrelas", TipoRecompensa.ESTRELAS, 3);
-		Caixa caixa3 = new Caixa("Você ganhou + 15 Pontos Extras", TipoRecompensa.PTS, 15);
-		Caixa caixa4 = new Caixa("Você ganhou + 20 Pontos Extras", TipoRecompensa.PTS, 20);
+		Caixa caixa1 = new Caixa("CAIXA SURPRESA!!! Você subiu de nível e estamos lhe dando + 2 estrelas", TipoRecompensa.ESTRELAS, 2);
+		Caixa caixa2 = new Caixa("CAIXA SURPRESA!!! Você subiu de nível e estamos lhe dando + 3 estrelas", TipoRecompensa.ESTRELAS, 3);
+		Caixa caixa3 = new Caixa("CAIXA SURPRESA!!! Você subiu de nível e estamos lhe dando + 15 Pontos Extras", TipoRecompensa.PTS, 15);
+		Caixa caixa4 = new Caixa("CAIXA SURPRESA!!! Você subiu de nível e estamos lhe dando + 20 Pontos Extras", TipoRecompensa.PTS, 20);
 		gerenciadorRecompensa.salvar(caixa1);
 		gerenciadorRecompensa.salvar(caixa2);
 		gerenciadorRecompensa.salvar(caixa3);

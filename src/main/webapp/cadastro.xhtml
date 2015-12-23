@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link
+		href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
+		rel="stylesheet" />
+	<script type="text/javascript"
+		src="//code.jquery.com/jquery-1.10.2.min.js" />
+	<script type="text/javascript"
+		src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js" />
+	<h:outputScript library="js" name="background.js" />
+
+	<script src="http://mymaplist.com/js/vendor/TweenLite.min.js" />
+	<h:outputStylesheet library="css" name="background.css" />
+	<h:outputStylesheet library="css" name="alertMessage.css" />
+</h:head>
+<h:body>
+	<div class="container">
+
+		<div class="row vertical-offset-100">
+			<div class="row centered-form">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="row-fluid user-row">
+								<img src="http://s11.postimg.org/7kzgji28v/logo_sm_2_mr_1.png"
+									class="img-responsive" alt="Conxole Admin" />
+							</div>
+						</div>
+						<div class="panel-body">
+							<p:growl id="growl" showDetail="true" sticky="true" />
+							<h:form accept-charset="UTF-8" role="form" class="form-signin">
+								<div class="form-group">
+									<h:inputText styleClass="form-control input-sm"
+										pt:placeholder="Nickname"
+										value="#{loginController.formCadastro.nickname}"
+										required="true" />
+								</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<h:inputSecret styleClass="form-control input-sm"
+												pt:placeholder="Senha"
+												value="#{loginController.formCadastro.senha}"
+												required="true" />
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<h:inputSecret styleClass="form-control input-sm"
+												pt:placeholder="Confirmar Senha"
+												value="#{loginController.formCadastro.confirmaSenha}"
+												required="true" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-md-10 col-md-offset-1">
+
+											<div class="row">
+												<h:selectOneRadio
+													value="#{loginController.formCadastro.avatar}" >
+													<div class="col-xs-3">
+														<f:selectItem itemLabel="Avatar 1" itemValue="1"/><br/>
+													</div>
+													<div class="col-xs-3">
+														<f:selectItem itemLabel="Avatar 2" itemValue="2" />
+													</div>
+													<div class="col-xs-3">
+														<f:selectItem itemLabel="Avatar 3" itemValue="3" />
+													</div>
+													<div class="col-xs-3">
+														<f:selectItem itemLabel="Avatar 4" itemValue="4" />
+													</div>
+												</h:selectOneRadio>
+
+												<div class="col-xs-3">
+													<h:graphicImage library="img" name="avatar1.png" />
+												</div>
+												<div class="col-xs-3">
+													<h:graphicImage library="img" name="avatar2.png" />
+												</div>
+												<div class="col-xs-3">
+													<h:graphicImage library="img" name="avatar3.png" />
+												</div>
+												<div class="col-xs-3">
+													<h:graphicImage library="img" name="avatar4.png" />
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<h:commandButton action="#{loginController.cadastrar}"
+									class="btn btn-lg btn-info btn-block" type="submit" id="login"
+									value="Registre-se »" />
+							</h:form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</h:body>
+</html>

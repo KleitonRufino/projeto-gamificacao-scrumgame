@@ -156,20 +156,6 @@ public class JogadorController implements Serializable {
 				formCooperacao.getQtd());
 		perfilJogadorAjudado = gerenciadorPerfil.processarPtsTotais(perfilJogadorAjudado);
 
-		Nivel novo = gerenciadorNivel.findByXp(perfilJogadorAjudado.getPtsTotais());
-		// boolean passouDeNivel =
-		// gerenciadorNivel.verificarNovoNivel(perfilJogadorAjudado.getNivel(),
-		// novo);
-		// if (passouDeNivel) {
-		// perfilJogadorAjudado =
-		// gerenciadorPerfil.processarNivel(perfilJogadorAjudado, novo);
-		// Caixa recompensa =
-		// gerenciadorRecompensa.verificarRecompensaParaNovoNivel(novo);
-		// perfilJogadorAjudado =
-		// gerenciadorPerfil.obterRecompensaPorNovoNivel(perfilJogadorAjudado,
-		// recompensa);
-		// }
-
 		gerenciadorPerfil.atualizar(perfilJogadorAjudado);
 
 		perfilJogadorQueAjudou = gerenciadorPerfil.inserirPtsParaCooperacaoNoPerfil(perfilJogadorQueAjudou,
@@ -185,7 +171,9 @@ public class JogadorController implements Serializable {
 		perfilJogadorQueAjudou = gerenciadorPerfil.atribuirPremiacaoParaPerfil(perfilJogadorQueAjudou, rodadaAtiva,
 				novasConquistas);
 
-		boolean passouDeNivel = gerenciadorNivel.verificarNovoNivel(this.perfil.getNivel(), novo);
+		Nivel novo = gerenciadorNivel.verificarNivel(perfilJogadorQueAjudou);
+		Nivel antigo = this.perfil.getNivel();
+		boolean passouDeNivel = gerenciadorNivel.verificarNovoNivel(antigo, novo);
 
 		Caixa recompensa = null;
 		if (passouDeNivel) {
@@ -200,8 +188,11 @@ public class JogadorController implements Serializable {
 		msg.add("UHU!!! nova ajuda(s) efetuada(s), continue assim!!! ");
 		msg.add("Você ganhou + " + this.verificarPontosDeAmigoObtidos(formCooperacao.getQtd(), this.perfil)
 				+ " Pontos de Amigo");
-		msg.add("Você ganhou + " + this.verificarPontosExtrasObtidosParaCooperacao(formCooperacao.getQtd(), this.perfil)
-				+ " Pontos Extras");
+		int ptsExtras = this.verificarPontosExtrasObtidosParaAtividade(qtdAtividade, this.perfil);
+		if (ptsExtras > 0) {
+			msg.add("O Poder de seu personagem foi ativado e você conquistou " + ptsExtras
+					+ " Pontos Extras por concluir nova(s) atividade(s)!!!");
+		}
 		if (novasConquistas.size() > 0) {
 			String s = "YEAH!!! Você desbloqueou " + novasConquistas.size() + " nova(s) conquista(s): ";
 			for (Conquista c : novasConquistas) {
@@ -253,8 +244,12 @@ public class JogadorController implements Serializable {
 		msg.add("UHU!!! nova(s) atividade(s) concluida(s)");
 		msg.add("Você ganhou + " + this.verificarPontosDeAtividadeObtidos(qtdAtividade, this.perfil)
 				+ " Pontos de Atividade");
-		msg.add("Você ganhou + " + this.verificarPontosExtrasObtidosParaAtividade(qtdAtividade, this.perfil)
-				+ " Pontos Extras");
+
+		int ptsExtras = this.verificarPontosExtrasObtidosParaAtividade(qtdAtividade, this.perfil);
+		if (ptsExtras > 0) {
+			msg.add("O Poder de seu personagem foi ativiado e você conquistou " + ptsExtras
+					+ " Pontos Extras nesta ação!!!");
+		}
 		if (novasConquistas.size() > 0) {
 			String s = "Você desbloqueou " + novasConquistas.size() + " conquista(s)" + "; " + "Nova(s) Conquista(s): ";
 			for (Conquista c : novasConquistas) {
@@ -316,7 +311,7 @@ public class JogadorController implements Serializable {
 			msg.add("Que Pena! você não pode obter esta habilidade");
 			msg.add("Razões:");
 			msg.add("1. Você não possui o personagem que contém esta habilidade");
-			msg.add("2. Seu nível é inferior ao nível de desbloqueio da habilidaed ");
+			msg.add("2. Seu nível é inferior ao nível de desbloqueio da habilidade");
 			msg.add("3. Você não possui estrelas suficientes");
 		} else {
 			this.perfil = perfil;
