@@ -12,7 +12,7 @@ public class Habilidade {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private String nome;
 	@Column(nullable = false)
 	private int preco;

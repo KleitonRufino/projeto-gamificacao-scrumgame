@@ -15,7 +15,7 @@ public class Personagem {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@Column(unique = true, nullable = false)
+	@Column(nullable = false)
 	private String nome;
 	@Enumerated(EnumType.STRING)
 	private Acao acao;

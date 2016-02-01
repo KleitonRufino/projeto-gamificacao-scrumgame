@@ -2,6 +2,7 @@ package com.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -9,13 +10,13 @@ import javax.persistence.OneToOne;
 public class Item {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(optional = false)
+	@OneToOne
 	private Personagem personagem;
-	@OneToOne(optional = true)
+	@OneToOne
 	private Habilidade habilidade;
-	@OneToOne(optional = false)
+	@OneToOne
 	private Perfil perfil;
 
 	public Item() {
